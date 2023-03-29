@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+
 
 @RestController
 @RequestMapping("/TFG")
@@ -30,8 +32,14 @@ public class BasicRestController{
 	private AlgoritmosServicio algoritmos;
 	
 	@PostMapping("/algoritmos/Guardar")
-	public Baches saveid(@RequestBody Baches b) {
-		return bachesRepository.save(b);
+	public ResponseEntity<Void> saveid(@RequestBody Baches b) {
+		try {
+			System.out.println("Entidad a guardar: " + b.getResultadoAlgoritmo());
+            bachesRepository.save(b);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
 	}
     
 	

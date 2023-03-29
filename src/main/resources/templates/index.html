@@ -598,15 +598,15 @@
             var boton6 = document.getElementById('abrirGuardado');
             boton6.addEventListener('click', function(event) {
             	
-            	var jsonTrazaOriginal = JSON.stringify(puntos);
-            	var jsonResultadoAlgoritmo = JSON.stringify(resultado);
+            	//var jsonTrazaOriginal = JSON.stringify(puntos);
+            	//var jsonResultadoAlgoritmo = JSON.stringify(resultado);
             	
             	const resultado_a_guardar = {
             		id: 1,
             		idTraza:nombreTraza,
             		algoritmoNombre: nombreAlgoritmo,
-            		puntosTraza: jsonTrazaOriginal,
-            		resultadoAlgoritmo: jsonResultadoAlgoritmo
+            		puntosTraza: puntos,
+            		resultadoAlgoritmo: resultado
             	};
             	
             	//algoritmos/Guardar

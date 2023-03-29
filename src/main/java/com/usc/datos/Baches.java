@@ -1,30 +1,34 @@
 package com.usc.datos;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.usc.bd.JsonNodeConverter;
+
 
 @Entity
-@Table(name = "Baches")
+@Table(name = "pruebas")
 public class Baches {
 	@Id
-    @Column(name = "Id")
+    @Column(name = "id")
 	private Integer id;
 	
-	@Id
-    @Column(name = "Id_traza")
+    @Column(name = "id_traza")
 	private String idTraza;
 	
-	@Id
-    @Column(name = "Algoritmo")
+    @Column(name = "algoritmo")
     private String algoritmoNombre;
 	
-	@Column(name = "Traza")
-    private String puntosTraza;
+    @Column(name = "traza", columnDefinition = "jsonb")
+    @Convert(converter = JsonNodeConverter.class)
+    private JsonNode   puntosTraza;
 	
-	@Column(name = "Resultado_algoritmo")
-    private String resultadoAlgoritmo;
+    @Column(name = "resultado_algoritmo", columnDefinition = "jsonb")
+    @Convert(converter = JsonNodeConverter.class)
+    private JsonNode   resultadoAlgoritmo;
 
 	public Integer getId() {
 		return id;
@@ -50,21 +54,22 @@ public class Baches {
 		this.algoritmoNombre = algoritmoNombre;
 	}
 
-	public String getPuntosTraza() {
+	public JsonNode getPuntosTraza() {
 		return puntosTraza;
 	}
 
-	public void setPuntosTraza(String puntosTraza) {
+	public void setPuntosTraza(JsonNode puntosTraza) {
 		this.puntosTraza = puntosTraza;
 	}
 
-	public String getResultadoAlgoritmo() {
+	public JsonNode getResultadoAlgoritmo() {
 		return resultadoAlgoritmo;
 	}
 
-	public void setResultadoAlgoritmo(String resultadoAlgoritmo) {
+	public void setResultadoAlgoritmo(JsonNode resultadoAlgoritmo) {
 		this.resultadoAlgoritmo = resultadoAlgoritmo;
 	}
-    
+
+	
 	
 }
