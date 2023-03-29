@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.usc.datos.Traza;
 
-public class Algoritmo {
+public class Algoritmos {
 	
 	public static List <Traza> Umbralización (List<Traza> array) {
 		//Detecta baches a parti de dos umbrales

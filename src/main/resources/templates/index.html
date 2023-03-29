@@ -241,6 +241,12 @@
             var puntos;
             //Alamacena el gráico
             var chart;
+            //Nombre algoritmo usado
+            var nombreAlgoritmo;
+           	//Nombre de la traza seleccionada
+           	var nombreTraza;
+           	//Resultado de un algoritmo
+           	var resultado;
           	//control: 0 boton de filtros desactivados, 1 boton de filtros activado, 2 boton de algoritmos activado, 3 boton de algoritmos activado y boton de guardar
             let control = 0;
             //flag que controla que no haya mas de un marcador en el mapa
@@ -353,6 +359,10 @@
                                     indices.push(data.features[i].properties.track);
                                 }
                             }
+                            //Limpiamos los id de la traza y el algoritmo
+                            nombreTraza = null;
+                            nombreAlgortimo = null;
+                            resultado = null
                             //Reseteamos los baches
                             baches.clearLayers();
                             bachesalgoritmo.clearLayers();
@@ -437,6 +447,7 @@
                                                             layersFiltrados.delete(key);
                                                         }
                                                         
+                                                        nombreTraza = e.target.myData.name.replace(/'/g, "");
                                                         //Para la traza seleccionada realizamos una petición Ajax para obtener los datos de la traza, enconreto los valores que muestran el rebote
                                                         $.ajax({
                                                             url: 'http://localhost:6060/geoserver/TFG/wfs?',
@@ -466,8 +477,6 @@
                                                                     //almacenamos la información en un hashmap
                                                                     hashmap.set(data.features[i].geometry.coordinates.reverse(), {velocidad: data.features[i].properties.speed, aceleracion: ac, baches: baches});
                                                                 }
-
-                                                                console.log(hashmap);
                                                                 //LLamamos a l función que se encarga de graficar los datos sobre el highchart
                                                                 graficar(hashmap);
 
@@ -552,6 +561,7 @@
                 event.preventDefault();
                 //Eliminamos los options del select
                 var select = document.getElementById("CompletarAlgoritmos");
+                nombreAlgoritmo = select.options[select.selectedIndex].text;
                 DeteccionDeBachesPorAlgorimtos(select.value);
                 formulario1.style.display = "none";
                 boton2.style.opacity = "";
@@ -587,6 +597,43 @@
             //Configuramos el botón de guardar
             var boton6 = document.getElementById('abrirGuardado');
             boton6.addEventListener('click', function(event) {
+            	
+            	var jsonTrazaOriginal = JSON.stringify(puntos);
+            	var jsonResultadoAlgoritmo = JSON.stringify(resultado);
+            	
+            	const resultado_a_guardar = {
+            		id: 1,
+            		idTraza:nombreTraza,
+            		algoritmoNombre: nombreAlgoritmo,
+            		puntosTraza: jsonTrazaOriginal,
+            		resultadoAlgoritmo: jsonResultadoAlgoritmo
+            	};
+            	
+            	//algoritmos/Guardar
+            	
+            	fetch('http://localhost:8090/TFG/algoritmos/Guardar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(resultado_a_guardar)
+                })
+                //Si la respuesta no es correcta, lanzamos un error
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('La respuesta no es correcta');
+                    }
+                    return response.json();
+                })
+                //Si la respuesta es correcta, mostramos los baches detectados por el algoritmo
+                .then(data => {
+                    console.log(data);
+                })
+                //Si se produce un error, lo mostramos por consola
+                .catch(error => {
+                    console.error('Se ha producido un erro!', error);
+                });
+            	
             });
             
         </script>
@@ -602,8 +649,8 @@
                         // Recorre los algoritmos y los agrega como opciones del select
                         data.forEach(function(algoritmo) {
                             var option = document.createElement("option");
-                            option.text = algoritmo;
-                            option.value = algoritmo;
+                            option.text = algoritmo.name;
+                            option.value = algoritmo.id;
                             algoritmosSelect.appendChild(option);
                         });
                     },
@@ -615,7 +662,7 @@
 
             function DeteccionDeBachesPorAlgorimtos(valor){
                 //Creamos una petición post con fetch al servidor de spring boot para obtener los baches detectados por el algoritmo
-                fetch('http://localhost:8090/TFG/algoritmos/?nombre=' + valor, {
+                fetch('http://localhost:8090/TFG/algoritmos/?id=' + valor, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -648,9 +695,7 @@
                         }
                     });
                     // Convierte los valores del mapa de objetos a un array
-                    const resultado = Array.from(objetosCoordenadasUnicas.values());
-                    
-                    console.log(resultado);
+                    resultado = Array.from(objetosCoordenadasUnicas.values());
                     
                     //Recorremos los baches detectados y los pintamos en el mapa
                     resultado.map(bache => {
