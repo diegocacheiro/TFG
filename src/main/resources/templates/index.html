@@ -61,6 +61,19 @@
 	  				<button id="abrirGuardado">Guardar</button>
 	  			</div>
         	</div>
+        	<div id="VerTabla" style="display: none;">
+        		<h1>Comparación de algoritmos</h1>
+	        	<table id="miTabla">
+				  <thead>
+				    <tr>
+				    	<th>Id</th>
+				      <th>Nombre de la traza</th>
+				      <th>Algoritmo</th>
+				    </tr>
+				  </thead>
+				  <tbody></tbody>
+				</table>
+        	</div>
         </div>
 
         <script>
@@ -512,11 +525,13 @@
             var boton1 = document.getElementById('MostrarForm');
             var boton2 = document.getElementById('ElegirAlg');
             var boton4 = document.getElementById('GuardarAlg');
+            var boton7 = document.getElementById('CompararAlg');
             
             //Guardamos en una variable los formularios
             var formulario = document.getElementById('Filtros');
             var formulario1 = document.getElementById('FiltroAlgoritmo');
             var formulario2 = document.getElementById('Guardar');
+            var formulario3 = document.getElementById('VerTabla'); 
             
             boton1.addEventListener('click', function() {
                 if (control != 1){
@@ -532,7 +547,8 @@
                     }
                 }
             });
-
+			
+            //Ponemos los algoritmos disponibles en el select
             boton2.addEventListener('click', function() {
                 if (control <= 1){
                     alert("Selecciona una ruta para elegir un algoritmo");
@@ -594,13 +610,11 @@
                 boton4.style.opacity = "";
             });
             
-            //Configuramos el botón de guardar
+            //Configuramos el botón de guardar en guardado
             var boton6 = document.getElementById('abrirGuardado');
             boton6.addEventListener('click', function(event) {
-            	
-            	//var jsonTrazaOriginal = JSON.stringify(puntos);
-            	//var jsonResultadoAlgoritmo = JSON.stringify(resultado);
-            	
+            	//ponemos el cursor cargando
+            	document.body.style.cursor = "wait";
             	const resultado_a_guardar = {
             		id: 1,
             		idTraza:nombreTraza,
@@ -610,7 +624,6 @@
             	};
             	
             	//algoritmos/Guardar
-            	
             	fetch('http://localhost:8090/TFG/algoritmos/Guardar', {
                     method: 'POST',
                     headers: {
@@ -618,27 +631,57 @@
                     },
                     body: JSON.stringify(resultado_a_guardar)
                 })
-                //Si la respuesta no es correcta, lanzamos un error
+                //Si la respuesta es correcta, mostramos los baches detectados por el algoritmo
                 .then(response => {
-                    if (!response.ok) {
+                	document.body.style.cursor = "default";
+                	formulario2.style.display = "none";
+                    boton4.style.opacity = "";
+                	if (response.ok) {
+                    	alert("Se ha guardado correctamente");	
+                	} else {
                         throw new Error('La respuesta no es correcta');
                     }
-                    return response.json();
-                })
-                //Si la respuesta es correcta, mostramos los baches detectados por el algoritmo
-                .then(data => {
-                    console.log(data);
+                	
                 })
                 //Si se produce un error, lo mostramos por consola
                 .catch(error => {
-                    console.error('Se ha producido un erro!', error);
+                    console.error('Se ha producido un error!', error);
                 });
             	
+            });
+            
+            //Configuramos el botón de comparar algoritmos
+            boton7.addEventListener('click', function(event) {
+	           	if (formulario3.style.display === "none") {
+                   formulario3.style.display = "block";
+                   boton7.style.opacity = "0.25";
+                   //Acordarse de cerrar el resto de botones
+                   obtenerAlgoritmosComparar();
+               } else {
+                   formulario3.style.display = "none";
+                   boton7.style.opacity = "";	
+               }
             });
             
         </script>
 
         <script>
+	        function obtenerAlgoritmosComparar(){
+	        	//Creamos una petición get al servidor de spring boot para obtener los nombres de los algoritmos
+                $.ajax({
+                    url: 'http://localhost:8090/TFG/algoritmos/Comparacion',
+                    type: 'GET',
+                    success: function(data) {
+                        console.log(data);
+                        //Añadimos los resultados a la tabla para que el usuario seleccione
+                        crearFilas(data);
+                    },
+                    error: function() {
+                        alert("Error al realizar la consulta");
+                    }
+                });
+	        }
+	        
             function pedirNombresAlgoritmos () {
                 //Creamos una petición get al servidor de spring boot para obtener los nombres de los algoritmos
                 $.ajax({
@@ -733,6 +776,27 @@
                     }
                 }
             }
+            
+            function crearFilas(array) {
+            	  var tabla = document.getElementById("miTabla");
+
+            	  for (var i = 0; i < array.length; i++) {
+            	    var fila = document.createElement("tr");
+            	    var celda1 = document.createElement("td");
+            	    var celda2 = document.createElement("td");
+            	    var celda3 = document.createElement("td");
+
+            	    celda1.innerHTML = array[i][0];
+            	    celda2.innerHTML = array[i][1];
+            	    celda3.innerHTML = array[i][2];
+
+            	    fila.appendChild(celda1);
+            	    fila.appendChild(celda2);
+            	    fila.appendChild(celda3);
+
+            	    tabla.tBodies[0].appendChild(fila);
+            	  }
+            	}
         </script>
     </body>
 </html>

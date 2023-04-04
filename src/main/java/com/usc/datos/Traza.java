@@ -1,6 +1,8 @@
 package com.usc.datos;
 
-public class Traza {
+import java.io.Serializable;
+
+public class Traza implements Serializable{
 	
 	private Integer x;
     private Double y;
@@ -8,6 +10,15 @@ public class Traza {
     private Double velocidad;
     private Integer baches;
     
+	public Traza(Integer x, Double y, Double[] coordenadas, Double velocidad, Integer baches) {
+		super();
+		this.x = x;
+		this.y = y;
+		this.coordenadas = coordenadas;
+		this.velocidad = velocidad;
+		this.baches = baches;
+	}
+	
 	public Integer getX() {
 		return x;
 	}

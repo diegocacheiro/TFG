@@ -1,11 +1,9 @@
 package com.usc.rest;
 
-import com.usc.algoritmos.Algoritmos;
-import com.usc.datos.Baches;
-import com.usc.datos.Algoritmo;
-import com.usc.datos.Traza;
+import com.usc.algoritmos.*;
+import com.usc.datos.*;
 import com.usc.repository.BachesRepository;
-import com.usc.service.AlgoritmosServicio;
+import com.usc.service.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,36 +15,47 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 
 @RestController
 @RequestMapping("/TFG")
 public class BasicRestController{
 	
-	
 	@Autowired
-	private BachesRepository bachesRepository;
+	private BachesRepository repository;
 	@Autowired
 	private AlgoritmosServicio algoritmos;
 	
 	@PostMapping("/algoritmos/Guardar")
-	public ResponseEntity<Void> saveid(@RequestBody Baches b) {
+	public ResponseEntity<String> saveid(@RequestBody Baches b) {
+		Integer id = repository.findMaxId();
 		try {
-			System.out.println("Entidad a guardar: " + b.getResultadoAlgoritmo());
-            bachesRepository.save(b);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (Exception e) {
+			if (id == null) {
+				id = 0;
+			} else {
+				id ++;
+			}
+			b.setId(id);
+			repository.save(b);
+			
+			System.out.println("hola");
+			return ResponseEntity.ok().body("{\"message\": \"ok\"}");
+		} catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 	}
-    
 	
 	@GetMapping("/")
 	public String lcs() {
 		return "index";
 	}
+	
+	@GetMapping("/algoritmos/Comparacion")
+    public ResponseEntity<List<Object[]>> obtenerAlgoritmosParaComparar() {
+        return ResponseEntity.ok(repository.AlgoritmosComparacion());
+    }
 	
 	@GetMapping("/algoritmos")
     public ResponseEntity<List<Algoritmo>> obtenerNombresAlgoritmos() {
