@@ -1,0 +1,65 @@
+       @font-face {
+           font-family: Dune;
+           src: url("./Dune_Rise.ttf");
+       }
+
+       @font-face {
+           font-family: Exo-ExtraLight;
+           src: url("./Exo-ExtraLight.ttf");
+       }
+
+       @font-face {
+           font-family: Exo-Light;
+           src: url("./Exo-Light.ttf");
+       }
+       
+       body { 
+       padding: 0; 
+       margin: 0; 
+       }
+       
+       #header {
+           position: absolute;
+           top: 0%;
+           left: 0%;
+           right: 0%;
+           bottom: 93%;
+           background-color: #7a62e6;
+           box-shadow: -20px 0 20px black;
+           z-index: 150;
+       }
+
+       #header h1 {
+           margin: 0;
+           padding: 0;
+           margin-top : 1%;
+           text-align: center;
+           color: #fff;
+           font-family: "Dune";
+           font-size: 40px;
+       }
+
+       #Lateral {
+           position: absolute;
+           top: 7%;
+           left: 0;
+           right: 97%;
+           bottom: 0%;
+           background-color: #7a62e6;
+           box-shadow: 0px -20px 20px black;
+           z-index: 125;
+       }
+       
+       #Atras{
+           position: absolute;
+           width: 60%; 
+           height: 7%;
+           top: 5%;
+           left: 15%;
+       }
+       
+       #Atras:hover {
+           opacity: 0.5;
+       }
+       
+   

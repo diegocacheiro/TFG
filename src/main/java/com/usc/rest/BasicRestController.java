@@ -57,6 +57,14 @@ public class BasicRestController{
         return ResponseEntity.ok(repository.AlgoritmosComparacion());
     }
 	
+	@GetMapping("/algoritmos/ComparacionDatos")
+    public ResponseEntity<List <Baches>> obtenerDatosAlgoritmosParaComparar( @RequestParam("id1") Integer id1,  @RequestParam("id2") Integer id2) {
+		List <Baches> resultado = new ArrayList<>();
+		resultado.add(repository.AlgoritmosDatosComparacion(id1));
+		resultado.add(repository.AlgoritmosDatosComparacion(id2));
+        return ResponseEntity.ok(resultado);
+    }
+	
 	@GetMapping("/algoritmos")
     public ResponseEntity<List<Algoritmo>> obtenerNombresAlgoritmos() {
         return ResponseEntity.ok(algoritmos.getAllEntities());

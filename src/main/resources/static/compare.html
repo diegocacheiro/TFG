@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">   	
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BumpApp</title>
+        <link rel="stylesheet" href="CSS/Compare.css" />
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    </head>
+    <body>
+    	<div id="header">    
+            <h1>BumpApp</h1>
+        </div>
+		
+		<div id="Contenedor">
+	        <div id="Lateral"> 
+	            <input id="Atras" type="image" src="Images/Atras.png">
+	        </div>
+        </div>
+        
+        <script>
+	        var boton = document.getElementById('Atras');
+	        boton.addEventListener('click', function(event) {
+	        	window.location.href = "http://localhost:8090";
+	        });
+        </script>
+        
+        <script>
+        	//Obtenemos los valores del localstorage
+	        var id1 = parseInt(localStorage.getItem("id1"));
+	        var id2 = parseInt(localStorage.getItem("id2"));
+	      	//Creamos una petición get al servidor de spring boot para obtener los datos de los algoritmos que hemos seleccionado
+	        $.ajax({
+	            url: 'http://localhost:8090/TFG/algoritmos/ComparacionDatos?id1=' + id1 + '&id2=' + id2,
+	            type: 'GET',
+	            success: function(data) {
+	            	console.log(data);
+	            	//Pintar los gráficos
+	            },
+	            error: function() {
+	                alert("Error al realizar la consulta");
+	            }
+	        });
+        </script>
+    <body>
+ </html>

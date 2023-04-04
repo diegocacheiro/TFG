@@ -2,7 +2,7 @@
 <html lang="es">
     <head>
         <meta charset="utf-8">   	
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"&amp;gt;>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>BumpApp</title>
         <link rel="stylesheet" href="CSS/index.css" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
@@ -63,16 +63,21 @@
         	</div>
         	<div id="VerTabla" style="display: none;">
         		<h1>Comparación de algoritmos</h1>
+        		<p>Selecciona dos algoritmos a comparar</p>
 	        	<table id="miTabla">
-				  <thead>
-				    <tr>
-				    	<th>Id</th>
-				      <th>Nombre de la traza</th>
-				      <th>Algoritmo</th>
-				    </tr>
+				 	<thead>
+					    <tr>
+						    <th>Id</th>
+						    <th>Nombre de la traza</th>
+						    <th>Algoritmo</th>
+					    </tr>
 				  </thead>
 				  <tbody></tbody>
 				</table>
+				<div id="Botonesomparacion">
+					<button id="cerrarComparacion">Cerrar</button>
+					<button id="CompararDosAlgoritmos">Comparar</button>
+				</div>
         	</div>
         </div>
 
@@ -540,7 +545,10 @@
                     if (formulario.style.display === "none") {
                         formulario.style.display = "block";
                         boton1.style.opacity = "0.25";
-
+                        if (formulario3.style.display === "block") {
+                       		formulario3.style.display = "none";
+                            boton7.style.opacity = "";
+                       }
                     } else {
                         formulario.style.display = "none";
                         boton1.style.opacity = "";
@@ -558,6 +566,10 @@
 	                    	formulario2.style.display = "none";
 	                        boton4.style.opacity = "";	
                     	}
+                    	if (formulario3.style.display === "block") {
+                       		formulario3.style.display = "none";
+                            boton7.style.opacity = "";
+                       }
                         formulario1.style.display = "block";
                         boton2.style.opacity = "0.25";
                         pedirNombresAlgoritmos();
@@ -592,10 +604,16 @@
             		if (formulario2.style.display === "none") {
                         formulario2.style.display = "block";
                         boton4.style.opacity = "0.25";
+                        //Cerramos el boton que abre la eleccion de algoritmos
                         if (formulario1.style.display === "block") {
                         	formulario1.style.display = "none";
                             boton2.style.opacity = "";
                         }
+                       	//Cerramos el boton que abre la comparacion de algoritmos
+                        if (formulario3.style.display === "block") {
+                       		formulario3.style.display = "none";
+                            boton7.style.opacity = "";
+                       }
                     } else {
                         formulario2.style.display = "none";
                         boton4.style.opacity = "";	
@@ -655,7 +673,21 @@
 	           	if (formulario3.style.display === "none") {
                    formulario3.style.display = "block";
                    boton7.style.opacity = "0.25";
-                   //Acordarse de cerrar el resto de botones
+                   //en el caso de que esté abierto el botón de filtro de trazas
+                   if (formulario.style.display === "block") {
+                   		formulario.style.display = "none";
+                       	boton1.style.opacity = "";
+                   }
+                   //en el caso de que esté abierto el botón de elegir algoritmo
+                   if (formulario1.style.display === "block") {
+                   		formulario1.style.display = "none";
+                        boton2.style.opacity = "";
+                   }
+                   //en el caso de que esté abierto el botón de guardar
+                   if (formulario2.style.display === "block") {
+                   		formulario2.style.display = "none";
+                        boton4.style.opacity = "";
+                   }
                    obtenerAlgoritmosComparar();
                } else {
                    formulario3.style.display = "none";
@@ -663,6 +695,14 @@
                }
             });
             
+          //Configuramos el botón de cerrado del guardado
+          var boton8 = document.getElementById('cerrarComparacion');
+          boton8.addEventListener('click', function(event) {
+          	formulario3.style.display = "none";
+              boton7.style.opacity = "";
+          });
+          
+          
         </script>
 
         <script>
@@ -672,7 +712,6 @@
                     url: 'http://localhost:8090/TFG/algoritmos/Comparacion',
                     type: 'GET',
                     success: function(data) {
-                        console.log(data);
                         //Añadimos los resultados a la tabla para que el usuario seleccione
                         crearFilas(data);
                     },
@@ -778,24 +817,70 @@
             }
             
             function crearFilas(array) {
-            	  var tabla = document.getElementById("miTabla");
-
-            	  for (var i = 0; i < array.length; i++) {
-            	    var fila = document.createElement("tr");
-            	    var celda1 = document.createElement("td");
-            	    var celda2 = document.createElement("td");
-            	    var celda3 = document.createElement("td");
-
-            	    celda1.innerHTML = array[i][0];
-            	    celda2.innerHTML = array[i][1];
-            	    celda3.innerHTML = array[i][2];
-
-            	    fila.appendChild(celda1);
-            	    fila.appendChild(celda2);
-            	    fila.appendChild(celda3);
-
-            	    tabla.tBodies[0].appendChild(fila);
-            	  }
+	          	  var tabla = document.getElementById("miTabla");
+	          	  tabla.tBodies[0].innerHTML = "";
+				  var filaSeleccionada1 = null;
+				  var filaSeleccionada2 = null;
+	          	  for (var i = 0; i < array.length; i++) {
+		          	    var fila = document.createElement("tr");
+		          	    var celda1 = document.createElement("td");
+		          	    var celda2 = document.createElement("td");
+		          	    var celda3 = document.createElement("td");
+		          	  	var b = document.createElement("button");
+						
+		          	    celda1.innerHTML = array[i][0];
+		          	    celda2.innerHTML = array[i][1];
+		          	    celda3.innerHTML = array[i][2];
+		
+		          	    fila.appendChild(celda1);
+		          	    fila.appendChild(celda2);
+		          	    fila.appendChild(celda3);
+		          	  	fila.appendChild(b);
+						
+		          	  	b.classList.add("boton-seleccionar");
+		          	  	b.addEventListener("click", function(event) {
+		          	      // Obtener la fila correspondiente al botón seleccionado
+		          	      var fila = event.target.closest('tr');
+		          	      // Si la fila ya está seleccionada, deseleccionarla
+		          	      if (fila === filaSeleccionada1 || fila === filaSeleccionada2) {
+		          	        fila.style.backgroundColor = '';
+		          	        if (fila === filaSeleccionada1) {
+		          	          filaSeleccionada1 = null;
+		          	        } else {
+		          	          filaSeleccionada2 = null;
+		          	        }
+		          	      } else {
+		          	        // Si no hay ninguna fila seleccionada, seleccionar esta fila
+		          	        if (filaSeleccionada1 === null && filaSeleccionada2 === null) {
+		          	          fila.style.backgroundColor = '#D3D3D3';
+		          	          filaSeleccionada1 = fila;
+		          	        // Si hay una fila seleccionada, seleccionar esta fila si no es la misma
+		          	        } else if (filaSeleccionada1 != null && filaSeleccionada2 === null) {
+		          	          if (fila !== filaSeleccionada1) {
+		          	            fila.style.backgroundColor = '#D3D3D3';
+		          	            filaSeleccionada2 = fila;
+		          	          }
+		          	        }
+		          	      }
+		          	    });
+	          	    	tabla.tBodies[0].appendChild(fila);
+          	  		}
+	          	  	//Configuramos el botón de comparar del guardado
+	              	var boton9 = document.getElementById('CompararDosAlgoritmos');
+	              	boton9.addEventListener('click', function(event) {
+	            	  	if (filaSeleccionada1 !==  null && null !== filaSeleccionada2) {
+	            		  	var id1 = filaSeleccionada1.getElementsByTagName("td")[0].innerHTML;
+	            		  	var id2 = filaSeleccionada2.getElementsByTagName("td")[0].innerHTML;
+	            		 	formulario3.style.display = "none";
+		                  	boton7.style.opacity = "";
+		                 	// Almacenamos los valores en el localStorage
+		                  	localStorage.setItem("id1", id1);
+		                  	localStorage.setItem("id2", id2);
+		                  	window.location.href = "Compare.html";
+	            	  	} else {
+	            		  alert ("Es necesario selecionar dos algoritmos");
+	            	  	}
+	              	});
             	}
         </script>
     </body>
