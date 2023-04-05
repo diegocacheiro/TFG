@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">   	
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BumpApp</title>
+        <link rel="stylesheet" href="CSS/visualizar.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw-src.css"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    </head>
+	<body>
+		<div id="header">    
+            <h1>BumpApp</h1>
+        </div>
+		<div id="Lateral"> 
+	    	<input id="Atras" type="image" src="Images/Atras.png">
+	    </div>
+
+        <div id="Contenedor">
+            <div id ="Mapa"></div>
+            <div id="Grafico"></div>
+        </div>
+        
+        <script>
+	        var boton = document.getElementById('Atras');
+	        boton.addEventListener('click', function(event) {
+	        	window.location.href = "http://localhost:8090";
+	        });
+	        
+	        function graficar(trazaNombre, algoritmo, puntos, resultado) {
+	        	let puntosBache = puntos.filter(punto => punto.baches === 1).map(punto => punto.coordenadas);
+                if (puntosBache.length > 0) {
+                    for (let i = 0; i < puntosBache.length; i++) {
+                        var bache = L.marker(puntosBache[i], {icon: icon2});
+                        baches.addLayer(bache);
+                        
+                    }
+                }
+	        	
+                //Ponemos la flecha en el inicio de la traza
+                flecha.setLatLng(puntos[0].coordenadas);
+              
+	        	//Creamos un array para almacenar los índices de los puntos que corresponden a baches
+                let indicesBache = puntos.filter(punto => punto.baches === 1).map(punto => punto.x);
+	        	
+                //Recorremos los baches detectados y los pintamos en el mapa
+                resultado.map(bache => {
+                    var b = L.marker(bache.coordenadas, {icon: icon3}).addTo(map);
+                    bachesalgoritmo.addLayer(b);
+                });
+              
+              	//Variable que controlla si el grafico ya ha sido cargado
+                var chartIsLoaded = false;
+	            // Crear el grafico
+	            chart = Highcharts.chart('Grafico', {
+	                chart: {
+	                    type: 'line',
+	                    animation: false,
+	                    zoomType: 'x',
+	                    panning: true,
+	                    panKey: 'shift',
+	                    events: {
+	                        load: function () {
+	                            chartIsLoaded = true;
+	
+	                            c = this;
+	                            // Recorremos los índices de los puntos con baches para crear las plotBands
+	                            for (let i = 0; i < indicesBache.length; i++) {
+	                                let start = puntos[indicesBache[i]].x - 1.5;
+	                                let end = puntos[indicesBache[i]].x + 1.5;
+	                                c.xAxis[0].addPlotBand({
+	                                    from: start,
+	                                    to: end,
+	                                    color: '#f80000', //E66262
+	                                    id: `plotband-${indicesBache[i]}`
+	                                });
+	                            }
+	                        }
+	                    }
+	                },
+	                title: {
+	                    text: trazaNombre + '->' + algoritmo,
+	                    style: {
+	                        fontSize: '30px',
+	                        fontFamily: "Exo-ExtraLight"
+	                    }
+	                },
+	                xAxis: {
+	                    labels: {
+	                        style: {
+	                            fontFamily: "Exo-Light"
+	                        }
+	                    },
+	                    events: {
+	                        setExtremes: function (e) {
+	                            //Vemos los puntos que están visibles en el zoom
+	                            let puntosEnZoom = puntos.filter(punto => punto.x >= e.min && punto.x <= e.max);
+	                            //Recorremos los puntos y sacamos las coordenadas
+	                            puntosEnZoom = puntosEnZoom.map(punto => punto.coordenadas);
+	                            //Actualizamos la sombra
+	                            sombra.setLatLngs(puntosEnZoom);
+	                            sombra.setStyle({ opacity: 0.9 });
+	                        }
+	                    }
+	                },
+	                yAxis:[{ //Se muestran aquí las aceleraciones verticales
+	                    title: {
+	                        text: 'Aceleración vertical'
+	                    }, 
+	                    labels: {
+	                        style: {
+	                            fontFamily: "Exo-Light"
+	                        }
+	                    }
+	                }, { //Se muestran aquí las velocidades
+	                    opposite: true,
+	                    title: {
+	                        text: 'Velocidad'
+	                    },
+	                    labels: {
+	                        style: {
+	                            fontFamily: "Exo-Light"
+	                        }
+	                    }
+	                }],
+	                series: [
+	                    {
+	                        name: 'Aceleración vertical',
+	                        color: '#7a62e6',
+	                        marker: {
+	                            radius: 3,
+	                            symbol: 'circle'
+	                        },
+	                        data: puntos.map(punto => punto.y),
+	                        yAxis: 0
+	                    },
+	                    {
+	                        name: 'Velocidad',
+	                        color: '#2d1a54',
+	                        marker: {
+	                            radius: 3,
+	                            symbol: 'circle'
+	                        },
+	                        data: puntos.map(punto => punto.velocidad),
+	                        yAxis: 1
+	                    }
+	                ],
+	                tooltip:{
+	                    formatter: function() {
+	                        return `Aceleración vertical ${puntos[this.point.x].y} <br>Coordenada: ${puntos[this.point.x].coordenadas} <br>Velocidad: ${puntos[this.point.x].velocidad}`;
+	                    }
+	                },
+	                legend: {
+	                    layout: 'vertical',
+	                    align: 'right',
+	                    verticalAlign: 'middle'
+	                },
+	                credits: {
+	                    enabled: false
+	                },
+	                plotOptions: {
+	                    series: {
+	                        point: {
+	                            events: {
+	                                mouseOver: function () {
+	                                    if (chartIsLoaded) {
+	                                    	flecha.setLatLng(puntos[this.x].coordenadas);
+	                                    }
+	                                },
+	                            }
+	                        },
+	                    }
+	                }
+	            });
+	            //Evento render del chart
+	            chart.render(function () {
+	                //Actualizar la variable de estado
+	                chartIsLoaded = true;
+	            });
+	            
+	         	// Recorremos los índices de los puntos con baches para crear las plotBands sobre el chart
+                for (let i = 0; i < resultado.length; i++) {
+                    let start = resultado[i].x - 1;
+                    let end = resultado[i].x + 1;
+                    chart.xAxis[0].addPlotBand({
+                        from: start,
+                        to: end,
+                        color: '#00FA27',
+                        id: `plotband-${resultado[i]}`
+                    });
+                }
+	        }
+        </script>
+        
+        <script>
+	        /*--------------------MAPA--------------------*/
+	        //Coordenadas de SDC 42.88052 -8.54569
+	        var map = L.map('Mapa').setView([42.880, -8.54], 14);
+	        //Obetenemos el mapa de openstreetmap como base
+	        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+			
+	      	//Creamos un marker personalizado para la flecha
+            const icon = L.icon({
+                iconUrl: 'Images/coche.png',
+                iconSize: [41, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [0, -41]
+            });
+            //Creamos un marker para la flecha
+            var flecha = L.marker([0, 0], {icon: icon}).addTo(map);
+          //Inicializamos la sombra que va a marcar en que zona estamos haciendo zoom en el highchat
+            var coordenadas = [  [51.505, -0.09],
+			  [51.51, -0.1]
+			];
+            var sombra = L.polyline(coordenadas, {color: '#effa01', opacity:0, weight: 20}).addTo(map);
+            //Creamos un marker personalizado para los baches
+            const icon2 = L.icon({
+                iconUrl: 'Images/ubicacion1.png',
+                iconSize: [35, 35],
+                iconAnchor: [3, 35],
+                popupAnchor: [0, -25]
+            });
+            const icon3 = L.icon({
+                iconUrl: 'Images/ubicacion2.png',
+                iconSize: [30, 30],
+                iconAnchor: [3, 30],
+                popupAnchor: [0, -25]
+            });
+            //Creamos un grupo de iconos que muestran los baches
+            var baches = L.layerGroup().addTo(map);
+            var bachesalgoritmo = L.layerGroup().addTo(map);
+            
+          	//Guardamos las capas creadas
+            var layersFiltrados = new Map();
+          	
+            var id = parseInt(localStorage.getItem("id1"));
+            $.ajax({
+	            url: 'http://localhost:8090/TFG/algoritmos/RecuperarDatos?id1=' + id,
+	            type: 'GET',
+	            success: function(data) {
+	            	//Pintar los gráficos
+	            	console.log(data);
+	            	flagPoly = 1;
+	            	const arrayCoordenadas = data.puntosTraza.map(elemento => elemento.coordenadas);
+	            	//Creamos una linea de los puntos de la traza y lo pintamos de un color en concreto
+                    var polyLine = L.polyline(arrayCoordenadas, {color: '#E29D17', weight: 5}).addTo(map);
+                 	//Agregamos el id del track para poder reconocer posteriormente las trazas
+                    polyLine.myData = {
+                        name: '\'' + data.idTraza  + '\''
+                    };
+                    layersFiltrados.set(data.idTraza, polyLine);
+                    
+                    graficar(data.idTraza, data.algoritmoNombre, data.puntosTraza, data.resultadoAlgoritmo);
+	            },
+	            error: function() {
+	                alert("Error al realizar la consulta");
+	            }
+	        });
+        </script>
+	</body>
+</html>

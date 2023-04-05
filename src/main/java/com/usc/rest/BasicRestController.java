@@ -65,6 +65,11 @@ public class BasicRestController{
         return ResponseEntity.ok(resultado);
     }
 	
+	@GetMapping("/algoritmos/RecuperarDatos")
+    public ResponseEntity<Baches> obtenerDatosAlgoritmosRecuperar( @RequestParam("id1") Integer id1) {
+        return ResponseEntity.ok(repository.AlgoritmosDatosComparacion(id1));
+    }
+	
 	@GetMapping("/algoritmos")
     public ResponseEntity<List<Algoritmo>> obtenerNombresAlgoritmos() {
         return ResponseEntity.ok(algoritmos.getAllEntities());
