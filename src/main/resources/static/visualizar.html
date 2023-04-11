@@ -11,6 +11,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw-src.css"/>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min.css" />
+  		<script src="https://cdn.jsdelivr.net/npm/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min.js"></script>
     </head>
 	<body>
 		<div id="header">    
@@ -198,10 +200,58 @@
         
         <script>
 	        /*--------------------MAPA--------------------*/
-	        //Coordenadas de SDC 42.88052 -8.54569
-	        var map = L.map('Mapa').setView([42.880, -8.54], 14);
-	        //Obetenemos el mapa de openstreetmap como base
-	        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+            //Coordenadas de SDC 42.88052 -8.54569
+            var map = L.map('Mapa').setView([42.880, -8.54], 14);
+            //Obtenemos el mapa de openstreetmap como base
+            //L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+            
+            var osmLayer = new L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			    noWrap: true
+			});
+			osmLayer.addTo(map);
+			var layersControl = new L.control.layers({
+			    'OSM': osmLayer
+			}).addTo(map);
+			
+			//google satellite
+		    var watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+		        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		        subdomains: 'abcd',
+		        ext: 'jpg'
+		    });
+			
+		 	// dark map 
+		    var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+		        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+		        subdomains: 'abcd'
+		    });
+
+		    // google street 
+		    var googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+		        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+		    });
+			
+			map.addControl(layersControl);
+			layersControl.addBaseLayer(googleStreets, 'Google street');
+			layersControl.addBaseLayer(watercolor, 'Water color');
+			layersControl.addBaseLayer(dark, 'Dark');
+			
+			L.control.coordinates({
+				//Posición del control en el mapa
+			  	position:"bottomleft",
+				//Número de decimales a mostrar en las coordenadas
+			  	decimals: 6, 
+			 	//Separador decimal
+			  	decimalSeperator: ",",
+			  	//Etiqueta para la latitud
+			  	labelTemplateLat: "Latitud: {y}", 
+			 	//Etiqueta para la longitud
+			  	labelTemplateLng: "Longitud: {x}",
+			 	//Mostrar las coordenadas en grados-minutos-segundos
+			  	useDMS: false,
+			 	//Ordenar las coordenadas como latitud-longitud
+			  	useLatLngOrder: true 
+			}).addTo(map);
 			
 	      	//Creamos un marker personalizado para la flecha
             const icon = L.icon({

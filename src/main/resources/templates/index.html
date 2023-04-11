@@ -11,6 +11,9 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw-src.css"/>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min.css" />
+  		<script src="https://cdn.jsdelivr.net/npm/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min.js"></script>
+        
     </head>
     <body>
         <div id="header">    
@@ -26,6 +29,7 @@
 
         <div id="Contenedor">
             <div id ="Mapa"></div>
+            <input id="resetbutton" type="image" src="Images/home.png">
             <div id="Grafico" style="display: none;"></div>
             <div id="Filtros" style="display: none;">
                 <h1 style="text-align: center;"> FILTRADO</h1>
@@ -273,9 +277,62 @@
             /*--------------------MAPA--------------------*/
             //Coordenadas de SDC 42.88052 -8.54569
             var map = L.map('Mapa').setView([42.880, -8.54], 14);
-            //Obetenemos el mapa de openstreetmap como base
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+            //Obtenemos el mapa de openstreetmap como base
+            var osmLayer = new L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			    noWrap: true
+			});
+			osmLayer.addTo(map);
+			var layersControl = new L.control.layers({
+			    'OSM': osmLayer
+			}).addTo(map);
+			
+			//google satellite
+		    var watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+		        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		        subdomains: 'abcd',
+		        ext: 'jpg'
+		    });
+			
+		 	// dark map 
+		    var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+		        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+		        subdomains: 'abcd'
+		    });
 
+		    // google street 
+		    var googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+		        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+		    });
+			
+		    //Permitimos su eleccion
+			map.addControl(layersControl);
+			layersControl.addBaseLayer(googleStreets, 'Google street');
+			layersControl.addBaseLayer(watercolor, 'Water color');
+			layersControl.addBaseLayer(dark, 'Dark');
+			
+			L.control.coordinates({
+				//Posición del control en el mapa
+			  	position:"bottomleft",
+				//Número de decimales a mostrar en las coordenadas
+			  	decimals: 6, 
+			 	//Separador decimal
+			  	decimalSeperator: ",",
+			  	//Etiqueta para la latitud
+			  	labelTemplateLat: "Latitud: {y}", 
+			 	//Etiqueta para la longitud
+			  	labelTemplateLng: "Longitud: {x}",
+			 	//Mostrar las coordenadas en grados-minutos-segundos
+			  	useDMS: false,
+			 	//Ordenar las coordenadas como latitud-longitud
+			  	useLatLngOrder: true 
+			}).addTo(map);
+			
+			//Configuramos el botón de resetear el zoom
+			var resetButton = document.getElementById('resetbutton');
+			resetButton.addEventListener('click', function(event) {
+				map.setView([42.880, -8.54], 14);
+			});
+			
             //Creamos un marker personalizado para la flecha
             const icon = L.icon({
                 iconUrl: 'Images/coche.png',
@@ -285,8 +342,7 @@
             });
             //Creamos un marker para la flecha
             var flecha = L.marker([0, 0], {icon: icon}).addTo(map);
-            
-            
+              
             //Inicializamos la sombra que va a marcar en que zona estamos haciendo zoom en el highchat
             var coordenadas = [  [51.505, -0.09],
 			  [51.51, -0.1]
@@ -426,6 +482,7 @@
                                             request: 'GetFeature',
                                             typeName: 'TFG:track_points',
                                             outputFormat: 'application/json',
+                                            srsName: 'EPSG:4326',
                                             cql_filter: 'track = ' + '\'' + indices[i] + '\''
                                         },
                                         success: function (data) {
@@ -479,6 +536,7 @@
                                                                 request: 'GetFeature',
                                                                 typeName: 'TFG:track_points',
                                                                 outputFormat: 'application/json',
+                                                                srsName: 'EPSG:4326',
                                                                 cql_filter: 'track = ' + '\'' + e.target.myData.name.replace(/'/g, "") + '\''
                                                             },
                                                             success: function(data){
@@ -872,7 +930,7 @@
 	          	  	//Configuramos el botón de comparar del guardado
 	              	var boton9 = document.getElementById('CompararDosAlgoritmos');
 	              	boton9.addEventListener('click', function(event) {
-	              		console.log("hola");
+	              		event.preventDefault();
 	            	  	if (filaSeleccionada1 !==  null && null !== filaSeleccionada2) {
 	            		  	var id1 = filaSeleccionada1.getElementsByTagName("td")[0].innerHTML;
 	            		  	var id2 = filaSeleccionada2.getElementsByTagName("td")[0].innerHTML;

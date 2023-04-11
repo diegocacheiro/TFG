@@ -113,7 +113,22 @@
            top: 1%;
            bottom: 2%;
        }
-
+		
+	   #resetbutton {
+	   	   position: absolute;
+	   	   height: 30px;
+           width: 28px;
+	   	   background-color: #ffffff;
+	   	   z-index: 70;
+	   	   bottom: 78%; 
+	   	   left: 1.5%;
+	   	   border: 2px solid grey;
+	   }
+	   
+	   #resetbutton:hover{
+	   		background-color: #dddddd;
+	   }
+	   
        #Grafico {
            position: absolute;
            height: 30%;
