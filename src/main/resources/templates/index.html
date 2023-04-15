@@ -33,7 +33,7 @@
             <div id="Grafico" style="display: none;"></div>
             <div id="Filtros" style="display: none;">
                 <h1 style="text-align: center;"> FILTRADO</h1>
-                <p style="margin-left: 5%; margin-right: 5%;">&nbsp; Filtra las rutas que se encuentran en el círculo dibujado.</p>
+                <p style="text-align: justify; margin-left: 5%; margin-right: 5%;">Filtra las rutas que se encuentran en el círculo dibujado.</p>
                 <form action="" method="post">
                     <label for="freq_min">Frecuencia mínima:</label>
                     <input type="range" id="freq_min" name="freq_min" min="0" max="1000">
@@ -52,9 +52,13 @@
             </div>
             <div id="FiltroAlgoritmo" style="display: none;">
                 <h1 style="text-align: center;">ANÁLISIS</h1>
-                <p style="margin-left: 5%; margin-right: 5%;">&nbsp; Analiza tu traza seleccionando diferentes algoritmos para la detección de baches.</p>
+                <p style="text-align: justify; margin-left: 5%; margin-right: 5%;">Analiza tu traza seleccionando diferentes algoritmos para la detección de baches.</p>
                 <form>
                     <select id="CompletarAlgoritmos"></select>
+                    <h2>Descripción:</h2>
+                    <p id=Descripcion></p>
+                    <h2>Parámetros:</h2>
+                    <div id="parametrosForm"></div>
                     <button id="EjecutarAlgoritmo">Ejecutar</button>
                 </form>
             </div>
@@ -269,6 +273,8 @@
            	var nombreTraza;
            	//Resultado de un algoritmo
            	var resultado;
+           	//Parametros usados
+           	var parametrosEnAlgoritmo;
           	//control: 0 boton de filtros desactivados, 1 boton de filtros activado, 2 boton de algoritmos activado, 3 boton de algoritmos activado y boton de guardar
             let control = 0;
             //flag que controla que no haya mas de un marcador en el mapa
@@ -441,10 +447,11 @@
                                     flecha.setLatLng([0, 0]);
                                     flagMarker = 0;
                                 }
-                              	//Limpiamos los id de la traza y el algoritmo
+                              	//Limpiamos los id de la traza, el algoritmo y los parametros usados
                                 nombreTraza = null;
                                 nombreAlgortimo = null;
-                                resultado = null
+                                resultado = null;
+                                parametrosEnAlgoritmo = null;
                                 //Reseteamos los baches
                                 baches.clearLayers();
                                 bachesalgoritmo.clearLayers();
@@ -648,10 +655,18 @@
             var boton3 = document.getElementById('EjecutarAlgoritmo');
             boton3.addEventListener('click', function(event) {
                 event.preventDefault();
+                
+              	//Obtenemos los valores de los inputs
+                var parametros = {};
+                var inputs = document.querySelectorAll('#parametrosForm input');
+                for (var i = 0; i < inputs.length; i++) {
+                    var input = inputs[i];
+                    parametros[input.name] = input.value;
+                }
                 //Eliminamos los options del select
                 var select = document.getElementById("CompletarAlgoritmos");
                 nombreAlgoritmo = select.options[select.selectedIndex].text;
-                DeteccionDeBachesPorAlgorimtos(select.value);
+                DeteccionDeBachesPorAlgorimtos(select.value, parametros);
                 formulario1.style.display = "none";
                 boton2.style.opacity = "";
                 select.innerHTML= "";
@@ -694,12 +709,14 @@
             boton6.addEventListener('click', function(event) {
             	//ponemos el cursor cargando
             	document.body.style.cursor = "wait";
+            	console.log(parametrosEnAlgoritmo);
             	const resultado_a_guardar = {
             		id: 1,
             		idTraza:nombreTraza,
             		algoritmoNombre: nombreAlgoritmo,
             		puntosTraza: puntos,
-            		resultadoAlgoritmo: resultado
+            		resultadoAlgoritmo: resultado,
+            		parametros: parametrosEnAlgoritmo
             	};
             	
             	//algoritmos/Guardar
@@ -789,12 +806,75 @@
                     type: 'GET',
                     success: function(data) {
                         let algoritmosSelect = document.getElementById("CompletarAlgoritmos");
-                        // Recorre los algoritmos y los agrega como opciones del select
+                        let Descripcion = document.getElementById("Descripcion");
+                        let parametrosForm = document.getElementById("parametrosForm");
+                        console.log(data);
+                        //Recorremos los algoritmos y los agrega como opciones del select
                         data.forEach(function(algoritmo) {
                             var option = document.createElement("option");
                             option.text = algoritmo.name;
                             option.value = algoritmo.id;
                             algoritmosSelect.appendChild(option);
+                        });
+                        //Actualizamos el campo descripcion
+                        let idSeleccionado = algoritmosSelect.value;
+                    	let algoritmoSeleccionado = data.find(function (algoritmo) {
+                            return algoritmo.id === Number(idSeleccionado);
+                         });
+                    	Descripcion.textContent = algoritmoSeleccionado.description;
+                    	
+                    	// Borra los inputs anteriores
+                        while (parametrosForm.firstChild) {
+                          parametrosForm.removeChild(parametrosForm.firstChild);
+                        }
+                    	///Creamos inputs para los parámetros del algoritmo seleccionado
+                        algoritmoSeleccionado.parametros.forEach(function (parametro) {
+					        let divParametro = document.createElement("div");
+					        let labelParametro = document.createElement("label");
+					        let inputParametro = document.createElement("input");
+					
+					        labelParametro.textContent = parametro;
+					        labelParametro.classList.add("label-parametro");
+					        inputParametro.type = "number";
+					        inputParametro.name = parametro;
+					        inputParametro.id = parametro;
+					        inputParametro.classList.add("input-parametro");
+					
+					        divParametro.appendChild(labelParametro);
+					        divParametro.appendChild(inputParametro);
+					        parametrosForm.appendChild(divParametro);
+					    });
+                    	
+                     	//Escuchamos el evento de cambio en el select
+                        algoritmosSelect.addEventListener('change', function () {
+                        	//Ponemos la descripcion para el algoritmo seleccionado
+                        	let idSeleccionado = algoritmosSelect.value;
+                        	let algoritmoSeleccionado = data.find(function (algoritmo) {
+                                return algoritmo.id === Number(idSeleccionado);
+                            });
+                        	Descripcion.textContent = algoritmoSeleccionado.description;
+                        	
+                        	// Borra los inputs anteriores
+                            while (parametrosForm.firstChild) {
+                              parametrosForm.removeChild(parametrosForm.firstChild);
+                            }
+                         	// Crea los inputs para los parámetros y los agrega al formulario
+                            algoritmoSeleccionado.parametros.forEach(function (parametro) {
+                              let divParametro = document.createElement("div");
+                              let labelParametro = document.createElement("label");
+                              let inputParametro = document.createElement("input");
+
+                              labelParametro.textContent = parametro;
+                              labelParametro.classList.add("label-parametro");
+                              inputParametro.type = "number";
+                              inputParametro.name = parametro;
+                              inputParametro.id = parametro;
+                              inputParametro.classList.add("input-parametro");
+
+                              divParametro.appendChild(labelParametro);
+                              divParametro.appendChild(inputParametro);
+                              parametrosForm.appendChild(divParametro);
+                            });
                         });
                     },
                     error: function() {
@@ -802,16 +882,20 @@
                     }
                 });
             }
-
-            function DeteccionDeBachesPorAlgorimtos(valor){
+			
+            function DeteccionDeBachesPorAlgorimtos(valor, parametros){
+            	const data = {
+       			  trazas: puntos,
+       			  parametros: parametros
+       			};
                 //Creamos una petición post con fetch al servidor de spring boot para obtener los baches detectados por el algoritmo
                 fetch('http://localhost:8090/TFG/algoritmos/?id=' + valor, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    //Enviamos los puntos de la ruta seleccionada en un JSON
-                    body: JSON.stringify(puntos)
+                    //Enviamos los puntos de la ruta seleccionada en un JSON y los parametros
+                    body: JSON.stringify(data)
                 })
                 //Si la respuesta no es correcta, lanzamos un error
                 .then(response => {
@@ -839,7 +923,7 @@
                     });
                     // Convierte los valores del mapa de objetos a un array
                     resultado = Array.from(objetosCoordenadasUnicas.values());
-                    
+                    parametrosEnAlgoritmo = parametros;
                     //Recorremos los baches detectados y los pintamos en el mapa
                     resultado.map(bache => {
                         var b = L.marker(bache.coordenadas, {icon: icon3}).addTo(map);
@@ -887,15 +971,18 @@
 		          	    var celda1 = document.createElement("td");
 		          	    var celda2 = document.createElement("td");
 		          	    var celda3 = document.createElement("td");
+		          	  	//var celda4 = document.createElement("td");
 		          	  	var b = document.createElement("button");
 						
 		          	    celda1.innerHTML = array[i][0];
 		          	    celda2.innerHTML = array[i][1];
 		          	    celda3.innerHTML = array[i][2];
+		          	  	//celda4.innerHTML = array[i][3];
 		
 		          	    fila.appendChild(celda1);
 		          	    fila.appendChild(celda2);
 		          	    fila.appendChild(celda3);
+		          	  	//fila.appendChild(celda4);
 		          	  	fila.appendChild(b);
 						
 		          	  	b.classList.add("boton-seleccionar");

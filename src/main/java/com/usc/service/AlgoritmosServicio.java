@@ -12,8 +12,14 @@ import com.usc.datos.Algoritmo;
 public class AlgoritmosServicio {
 	public List<Algoritmo> getAllEntities() {
 		List<Algoritmo> basicEntities = new ArrayList<Algoritmo>();
-		basicEntities.add(new Algoritmo(1, "Umbralización", "Ecuentra los baches cuya aceleración verticale está por encima del umbral superior o por debajo del umbral inferior"));
-		basicEntities.add(new Algoritmo(2, "Variabilidad", "Ecuentra los baches que están fuera del rango normal de aceleraciones utilizando un criterio basado en la media, la varianza y la desviación típica de las aceleraciones"));
+		List<String> parametros1 = new ArrayList<>();
+		parametros1.add("Umbral superior");
+		parametros1.add("Umbral inferior");
+		basicEntities.add(new Algoritmo(1, "Umbralización", "Ecuentra los baches cuya aceleración verticale está por encima del umbral superior o por debajo del umbral inferior", parametros1));
+		List<String> parametros2 = new ArrayList<>();
+		parametros2.clear();
+		parametros2.add("Sigma");
+		basicEntities.add(new Algoritmo(2, "Variabilidad", "Ecuentra los baches que están fuera del rango normal de aceleraciones utilizando un criterio basado en la media, la varianza y la desviación típica de las aceleraciones", parametros2));
 		return basicEntities;
 	}
 }

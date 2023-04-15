@@ -5,6 +5,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.*;
 
@@ -30,16 +31,23 @@ public class Baches {
     @Column(name = "resultado_algoritmo", columnDefinition = "jsonb")
     private List<Traza> resultadoAlgoritmo;
     
+    @Type(type = "jsonb")
+    @Column(name = "parametros", columnDefinition = "jsonb")
+    private Map<String, Object> parametros;
+    
     public Baches() {
         super();
     }
-    
-	public Baches(String idTraza, String algoritmoNombre, List<Traza> puntosTraza, List<Traza> resultadoAlgoritmo) {
+
+	public Baches(Integer id, String idTraza, String algoritmoNombre, List<Traza> puntosTraza,
+			List<Traza> resultadoAlgoritmo, Map<String, Object> parametros) {
 		super();
+		this.id = id;
 		this.idTraza = idTraza;
 		this.algoritmoNombre = algoritmoNombre;
 		this.puntosTraza = puntosTraza;
 		this.resultadoAlgoritmo = resultadoAlgoritmo;
+		this.parametros = parametros;
 	}
 
 	public Integer getId() {
@@ -81,4 +89,14 @@ public class Baches {
 	public void setResultadoAlgoritmo(List<Traza> resultadoAlgoritmo) {
 		this.resultadoAlgoritmo = resultadoAlgoritmo;
 	}
+
+	public Map<String, Object> getParametros() {
+		return parametros;
+	}
+
+	public void setParametros(Map<String, Object> parametros) {
+		this.parametros = parametros;
+	}
+    
+	
 }

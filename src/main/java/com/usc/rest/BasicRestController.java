@@ -7,6 +7,7 @@ import com.usc.service.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,15 +78,22 @@ public class BasicRestController{
     
     //@RequestParam String nombre, @RequestParam HashMap<List<Double>, DatosHash> data
     @PostMapping("/algoritmos/")
-    public ResponseEntity<List <Traza>> ejecutarAlgoritmo(@RequestBody List<Traza> array, @RequestParam("id") Integer id) {
-    	
+    public ResponseEntity<List <Traza>> ejecutarAlgoritmo(@RequestBody DatosAlgoritmo datos, @RequestParam("id") Integer id) {
+    	List<Traza> array = datos.getTrazas();
+        Map<String, Object> parametros = datos.getParametros();
+        for (Map.Entry<String, Object> entry : parametros.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            System.out.println(key + " : " + value);
+        }
+        
     	List <Traza> resultado = new ArrayList<>();
         switch (id) {
             case 1:
-                resultado = Algoritmos.Umbralización(array);
+                resultado = Algoritmos.Umbralización(array, parametros);
                 break;
             case 2:
-                resultado = Algoritmos.Variabilidad(array);
+                resultado = Algoritmos.Variabilidad(array, parametros);
                 break;
             default:
                 throw new IllegalArgumentException("Algoritmo desconocido: " + id);
