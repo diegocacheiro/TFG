@@ -38,8 +38,8 @@
 	            type: 'GET',
 	            success: function(data) {
 	            	//Pintar los gráficos
-	            	graficar(data[0].idTraza, data[0].algoritmoNombre, data[0].puntosTraza, data[0].resultadoAlgoritmo);
-	            	graficar2(data[1].idTraza, data[1].algoritmoNombre, data[1].puntosTraza, data[1].resultadoAlgoritmo);
+	            	graficar(data[0].idTraza, data[0].algoritmoNombre, data[0].parametros, data[0].puntosTraza, data[0].resultadoAlgoritmo);
+	            	graficar2(data[1].idTraza, data[1].algoritmoNombre, data[1].parametros, data[1].puntosTraza, data[1].resultadoAlgoritmo);
 	            	document.body.style.cursor = "default";
 	            },
 	            error: function() {
@@ -49,7 +49,7 @@
         </script>
         
         <script>
-	        function graficar(trazaNombre, algoritmo, puntos, resultado) {
+	        function graficar(trazaNombre, algoritmo, parametros, puntos, resultado) {
 	        	//Creamos un array para almacenar los índices de los puntos que corresponden a baches
                 let indicesBache = puntos.filter(punto => punto.baches === 1).map(punto => punto.x);
 	        	
@@ -81,7 +81,7 @@
 	                    }
 	                },
 	                title: {
-	                    text: trazaNombre + '->' + algoritmo,
+	                    text: trazaNombre + '->' + algoritmo + '->' + JSON.stringify(parametros),
 	                    style: {
 	                        fontSize: '30px',
 	                        fontFamily: "Exo-ExtraLight"
@@ -194,7 +194,7 @@
                 }
 	        }
 	        
-	        function graficar2(trazaNombre, algoritmo, puntos, resultado) {
+	        function graficar2(trazaNombre, algoritmo, parametros, puntos, resultado) {
 	        	//Creamos un array para almacenar los índices de los puntos que corresponden a baches
                 let indicesBache = puntos.filter(punto => punto.baches === 1).map(punto => punto.x);
 	        	
@@ -226,7 +226,7 @@
 	                    }
 	                },
 	                title: {
-	                    text: trazaNombre + '->' + algoritmo,
+	                    text: trazaNombre + '->' + algoritmo + '->' + JSON.stringify(parametros),
 	                    style: {
 	                        fontSize: '30px',
 	                        fontFamily: "Exo-ExtraLight"

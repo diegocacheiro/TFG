@@ -33,7 +33,7 @@
 	        	window.location.href = "http://localhost:8090";
 	        });
 	        
-	        function graficar(trazaNombre, algoritmo, puntos, resultado) {
+	        function graficar(trazaNombre, algoritmo, parametros, puntos, resultado) {
 	        	let puntosBache = puntos.filter(punto => punto.baches === 1).map(punto => punto.coordenadas);
                 if (puntosBache.length > 0) {
                     for (let i = 0; i < puntosBache.length; i++) {
@@ -85,9 +85,9 @@
 	                    }
 	                },
 	                title: {
-	                    text: trazaNombre + '->' + algoritmo,
+	                    text: trazaNombre + '->' + algoritmo + '->' + JSON.stringify(parametros),
 	                    style: {
-	                        fontSize: '30px',
+	                        fontSize: '25px',
 	                        fontFamily: "Exo-ExtraLight"
 	                    }
 	                },
@@ -304,7 +304,7 @@
                     };
                     layersFiltrados.set(data.idTraza, polyLine);
                     
-                    graficar(data.idTraza, data.algoritmoNombre, data.puntosTraza, data.resultadoAlgoritmo);
+                    graficar(data.idTraza, data.algoritmoNombre, data.parametros, data.puntosTraza, data.resultadoAlgoritmo);
 	            },
 	            error: function() {
 	                alert("Error al realizar la consulta");

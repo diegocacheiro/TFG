@@ -350,13 +350,14 @@
        	  top: 50%;
 		  left: 50%;
 		  transform: translate(-50%, -50%);
-		  width: 500px;
+		  width: 700px;
 		  height: 500px;
           z-index: 100;
           background-color:rgba(255, 255, 255, 0.568);
           backdrop-filter: blur(5px);
           border-radius: 5px;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+          overflow-y: auto;
 		}
 		
 		#VerTabla h1{
@@ -413,10 +414,11 @@
 		}
 		
 		#Botonesomparacion {
-		  position: absolute;
+		  position: relative;
 		  left: 0;
 		  right: 0;
-		  bottom: 20px;
+		  top: 5px;
+		  bottom: 10px;
 		  text-align: center;
 		}
 		

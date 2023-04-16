@@ -15,7 +15,7 @@ public class AlgoritmosServicio {
 		List<String> parametros1 = new ArrayList<>();
 		parametros1.add("Umbral superior");
 		parametros1.add("Umbral inferior");
-		basicEntities.add(new Algoritmo(1, "Umbralización", "Ecuentra los baches cuya aceleración verticale está por encima del umbral superior o por debajo del umbral inferior", parametros1));
+		basicEntities.add(new Algoritmo(1, "Umbralización", "Ecuentra los baches cuya aceleración vertical está por encima del umbral superior o por debajo del umbral inferior", parametros1));
 		List<String> parametros2 = new ArrayList<>();
 		parametros2.clear();
 		parametros2.add("Sigma");

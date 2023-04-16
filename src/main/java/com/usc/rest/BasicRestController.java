@@ -40,8 +40,6 @@ public class BasicRestController{
 			}
 			b.setId(id);
 			repository.save(b);
-			
-			System.out.println("hola");
 			return ResponseEntity.ok().body("{\"message\": \"ok\"}");
 		} catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -81,12 +79,6 @@ public class BasicRestController{
     public ResponseEntity<List <Traza>> ejecutarAlgoritmo(@RequestBody DatosAlgoritmo datos, @RequestParam("id") Integer id) {
     	List<Traza> array = datos.getTrazas();
         Map<String, Object> parametros = datos.getParametros();
-        for (Map.Entry<String, Object> entry : parametros.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            System.out.println(key + " : " + value);
-        }
-        
     	List <Traza> resultado = new ArrayList<>();
         switch (id) {
             case 1:

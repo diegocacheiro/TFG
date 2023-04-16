@@ -78,6 +78,7 @@
 						    <th>Id</th>
 						    <th>Nombre de la traza</th>
 						    <th>Algoritmo</th>
+						    <th>Parámetros</th>
 					    </tr>
 				  </thead>
 				  <tbody></tbody>
@@ -658,17 +659,24 @@
                 
               	//Obtenemos los valores de los inputs
                 var parametros = {};
+              	let flag = true;
                 var inputs = document.querySelectorAll('#parametrosForm input');
                 for (var i = 0; i < inputs.length; i++) {
                     var input = inputs[i];
+                    if (!Boolean(input.value)){
+                    	flag = false;
+                    }
                     parametros[input.name] = input.value;
                 }
-                //Eliminamos los options del select
                 var select = document.getElementById("CompletarAlgoritmos");
                 nombreAlgoritmo = select.options[select.selectedIndex].text;
-                DeteccionDeBachesPorAlgorimtos(select.value, parametros);
                 formulario1.style.display = "none";
                 boton2.style.opacity = "";
+                if (flag === true){
+                    DeteccionDeBachesPorAlgorimtos(select.value, parametros);
+                } else{
+                	alert("Debes completar todos los parámetros");
+                }
                 select.innerHTML= "";
             });
             
@@ -808,7 +816,6 @@
                         let algoritmosSelect = document.getElementById("CompletarAlgoritmos");
                         let Descripcion = document.getElementById("Descripcion");
                         let parametrosForm = document.getElementById("parametrosForm");
-                        console.log(data);
                         //Recorremos los algoritmos y los agrega como opciones del select
                         data.forEach(function(algoritmo) {
                             var option = document.createElement("option");
@@ -839,6 +846,7 @@
 					        inputParametro.name = parametro;
 					        inputParametro.id = parametro;
 					        inputParametro.classList.add("input-parametro");
+					        inputParametro.setAttribute("value", "1");
 					
 					        divParametro.appendChild(labelParametro);
 					        divParametro.appendChild(inputParametro);
@@ -870,6 +878,7 @@
                               inputParametro.name = parametro;
                               inputParametro.id = parametro;
                               inputParametro.classList.add("input-parametro");
+                              inputParametro.setAttribute("value", "1");
 
                               divParametro.appendChild(labelParametro);
                               divParametro.appendChild(inputParametro);
@@ -971,18 +980,18 @@
 		          	    var celda1 = document.createElement("td");
 		          	    var celda2 = document.createElement("td");
 		          	    var celda3 = document.createElement("td");
-		          	  	//var celda4 = document.createElement("td");
+		          	  	var celda4 = document.createElement("td");
 		          	  	var b = document.createElement("button");
-						
+		          	  	
 		          	    celda1.innerHTML = array[i][0];
 		          	    celda2.innerHTML = array[i][1];
 		          	    celda3.innerHTML = array[i][2];
-		          	  	//celda4.innerHTML = array[i][3];
-		
+		          	  	celda4.innerHTML = JSON.stringify(array[i][3]);
+		          	  	
 		          	    fila.appendChild(celda1);
 		          	    fila.appendChild(celda2);
 		          	    fila.appendChild(celda3);
-		          	  	//fila.appendChild(celda4);
+		          	  	fila.appendChild(celda4);
 		          	  	fila.appendChild(b);
 						
 		          	  	b.classList.add("boton-seleccionar");
