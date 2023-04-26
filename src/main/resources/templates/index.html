@@ -72,17 +72,19 @@
         	<div id="VerTabla" style="display: none;">
         		<h1>Comparación de algoritmos</h1>
         		<p>Selecciona uno o dos algoritmos a visualizar</p>
-	        	<table id="miTabla">
-				 	<thead>
-					    <tr>
-						    <th>Id</th>
-						    <th>Nombre de la traza</th>
-						    <th>Algoritmo</th>
-						    <th>Parámetros</th>
-					    </tr>
-				  </thead>
-				  <tbody></tbody>
-				</table>
+        		<div id="ContenerTabla">
+		        	<table id="miTabla">
+					 	<thead>
+						    <tr>
+							    <th>Id</th>
+							    <th>Nombre de la traza</th>
+							    <th>Algoritmo</th>
+							    <th>Parámetros</th>
+						    </tr>
+					  </thead>
+					  <tbody></tbody>
+					</table>
+				</div>
 				<div id="Botonesomparacion">
 					<button id="cerrarComparacion">Cerrar</button>
 					<button id="CompararDosAlgoritmos">Comparar</button>
@@ -1026,7 +1028,7 @@
 	              	var boton9 = document.getElementById('CompararDosAlgoritmos');
 	              	boton9.addEventListener('click', function(event) {
 	              		event.preventDefault();
-	            	  	if (filaSeleccionada1 !==  null && null !== filaSeleccionada2) {
+	            	  	if (filaSeleccionada1 !==  null && filaSeleccionada2 !== null) {
 	            		  	var id1 = filaSeleccionada1.getElementsByTagName("td")[0].innerHTML;
 	            		  	var id2 = filaSeleccionada2.getElementsByTagName("td")[0].innerHTML;
 	            		 	formulario3.style.display = "none";
@@ -1035,19 +1037,19 @@
 		                  	localStorage.setItem("id1", id1);
 		                  	localStorage.setItem("id2", id2);
 		                  	window.location.href = "Compare.html";
-	            	  	} else if(filaSeleccionada1 ===  null && null !== filaSeleccionada2){
+	            	  	} else if(filaSeleccionada1 ===  null && filaSeleccionada2 !== null){
 	            	  		// Almacenamos los valores en el localStorage
 		                  	localStorage.setItem("id1", filaSeleccionada2.getElementsByTagName("td")[0].innerHTML);
 	            	  		formulario3.style.display = "none";
 		                  	boton7.style.opacity = "";
 		                  	window.location.href = "Visualizar.html";
-	            	  	} else if (filaSeleccionada1 !==  null && null === filaSeleccionada2) {
+	            	  	} else if (filaSeleccionada1 !==  null && filaSeleccionada2 === null) {
 	            	  		// Almacenamos los valores en el localStorage
 		                  	localStorage.setItem("id1", filaSeleccionada1.getElementsByTagName("td")[0].innerHTML);
 	            	  		formulario3.style.display = "none";
 		                  	boton7.style.opacity = "";
 		                  	window.location.href = "Visualizar.html";
-	            	  	} else {
+	            	  	} else if ((filaSeleccionada1 ===  null && filaSeleccionada2 === null)){
 	            		  alert ("Es necesario selecionar uno o dos algoritmos");
 	            	  	}
 	              	});

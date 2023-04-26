@@ -371,7 +371,13 @@
            text-align: center;
        }
        
-		#VerTabla table {
+       #ContenerTabla {
+       		width: 100%;
+		  	height: 65%;
+		  	overflow-y: auto;
+       }
+       
+	   #VerTabla table {
 		  width: 95%;
 		  margin: 0 auto;
 		  border-collapse: collapse;
@@ -417,8 +423,8 @@
 		  position: relative;
 		  left: 0;
 		  right: 0;
-		  top: 5px;
-		  bottom: 10px;
+		  top: 15px;
+		  bottom: 5px;
 		  text-align: center;
 		}
 		
