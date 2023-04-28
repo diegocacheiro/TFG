@@ -12,10 +12,10 @@
            font-family: Exo-Light;
            src: url("./Exo-Light.ttf");
        }
-       
+	   
        body { 
-       padding: 0; 
-       margin: 0; 
+	       padding: 0; 
+	       margin: 0; 
        }
 
        #header {
@@ -324,6 +324,7 @@
           border: 1px solid #ccc;
           border-radius: 5px;
           box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+          cursor: pointer;
 		}
 		
 		#cerrarGuardado:hover {
@@ -338,6 +339,7 @@
           border: 1px solid #ccc;
           border-radius: 5px;
           box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+          cursor: pointer;
 		}
 		
 		#abrirGuardado:hover {
@@ -399,8 +401,8 @@
 		}
 		
 		.boton-seleccionar {
-		  background-color: #7a62e6;
-		  color: white;
+		  background-color: transparent;
+		  color: black;
 		  border: none;
 		  cursor: pointer;
 		  padding: 8px 16px;
@@ -410,13 +412,31 @@
 		}
 		
 		.boton-seleccionar:hover:not(:disabled) {
-		  background-color: #563ea8;
+		  background-color: #b5b5b5;
 		}
 		
 		.boton-seleccionar:after {
 		  content: "\2713";
 		  margin-left: 5px;
-		  font-size: 12px;
+		  font-size: 20px;
+		}
+		
+		.boton-eliminar {
+		  background-color: transparent;
+		  border: none;
+		  cursor: pointer;
+		  padding: 8px 16px;
+		  font-size: 16px;
+		  border-radius: 4px;
+		  transition: background-color 0.2s ease;
+		}
+		
+		.boton-eliminar img{
+			width: 30px;
+  		  	height: 30px;
+		}
+		.boton-eliminar:hover:not(:disabled) {
+		  background-color: #b5b5b5;
 		}
 		
 		#Botonesomparacion {
@@ -436,6 +456,7 @@
           border: 1px solid #ccc;
           border-radius: 5px;
           box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+          cursor: pointer;
 		}
 		
 		#cerrarComparacion:hover {
@@ -450,10 +471,15 @@
           border: 1px solid #ccc;
           border-radius: 5px;
           box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+          cursor: pointer;
 		}
 		
 		#CompararDosAlgoritmos:hover {
           background-color: #f5f5f5;
        }
+       
+       .oculto {
+		    display: none;
+		}
 		
        

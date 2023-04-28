@@ -24,10 +24,12 @@
 
         <div id="Contenedor">
             <div id ="Mapa"></div>
+            <input id="resetbutton" type="image" src="Images/home.png">
             <div id="Grafico"></div>
         </div>
         
         <script>
+        	document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
 	        var boton = document.getElementById('Atras');
 	        boton.addEventListener('click', function(event) {
 	        	window.location.href = "http://localhost:8090";
@@ -253,6 +255,12 @@
 			  	useLatLngOrder: true 
 			}).addTo(map);
 			
+			//Configuramos el botón de resetear el zoom
+			var resetButton = document.getElementById('resetbutton');
+			resetButton.addEventListener('click', function(event) {
+				map.setView([42.880, -8.54], 14);
+			});
+			
 	      	//Creamos un marker personalizado para la flecha
             const icon = L.icon({
                 iconUrl: 'Images/coche.png',
@@ -292,8 +300,6 @@
 	            url: 'http://localhost:8090/TFG/algoritmos/RecuperarDatos?id1=' + id,
 	            type: 'GET',
 	            success: function(data) {
-	            	//Pintar los gráficos
-	            	console.log(data);
 	            	flagPoly = 1;
 	            	const arrayCoordenadas = data.puntosTraza.map(elemento => elemento.coordenadas);
 	            	//Creamos una linea de los puntos de la traza y lo pintamos de un color en concreto
@@ -305,8 +311,10 @@
                     layersFiltrados.set(data.idTraza, polyLine);
                     
                     graficar(data.idTraza, data.algoritmoNombre, data.parametros, data.puntosTraza, data.resultadoAlgoritmo);
+                    document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
 	            },
 	            error: function() {
+	            	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
 	                alert("Error al realizar la consulta");
 	            }
 	        });

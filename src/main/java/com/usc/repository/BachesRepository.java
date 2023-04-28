@@ -2,8 +2,7 @@ package com.usc.repository;
 
 
 import java.util.List;
-
-//import java.util.List;
+import org.springframework.data.jpa.repository.Modifying;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -21,5 +20,10 @@ public interface BachesRepository extends CrudRepository<Baches, Integer> {
 	
 	@Query("SELECT b FROM Baches b WHERE b.id = :id1")
 	public Baches AlgoritmosDatosComparacion(@Param("id1") Integer id);
+	
+	@Modifying
+	@Query("DELETE FROM Baches b WHERE b.id = :id1")
+	public void EliminarAlgoritmoBache(@Param("id1") Integer id);
+
 	
 }

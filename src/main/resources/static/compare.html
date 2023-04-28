@@ -21,6 +21,7 @@
         </div>
         
         <script>
+        	document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
 	        var boton = document.getElementById('Atras');
 	        boton.addEventListener('click', function(event) {
 	        	window.location.href = "http://localhost:8090";
@@ -28,7 +29,8 @@
         </script>
         
         <script>
-        	document.body.style.cursor = "wait";
+	        var chart = null;
+	        var chart2 = null;
         	//Obtenemos los valores del localstorage
 	        var id1 = parseInt(localStorage.getItem("id1"));
 	        var id2 = parseInt(localStorage.getItem("id2"));
@@ -40,9 +42,10 @@
 	            	//Pintar los gráficos
 	            	graficar(data[0].idTraza, data[0].algoritmoNombre, data[0].parametros, data[0].puntosTraza, data[0].resultadoAlgoritmo);
 	            	graficar2(data[1].idTraza, data[1].algoritmoNombre, data[1].parametros, data[1].puntosTraza, data[1].resultadoAlgoritmo);
-	            	document.body.style.cursor = "default";
+	            	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
 	            },
 	            error: function() {
+	            	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
 	                alert("Error al realizar la consulta");
 	            }
 	        });
@@ -94,16 +97,13 @@
 	                        }
 	                    },
 	                    events: {
-	                        setExtremes: function (e) {
-	                        	/*
-	                            //Vemos los puntos que están visibles en el zoom
-	                            let puntosEnZoom = puntos.filter(punto => punto.x >= e.min && punto.x <= e.max);
-	                            //Recorremos los puntos y sacamos las coordenadas
-	                            puntosEnZoom = puntosEnZoom.map(punto => punto.coordenadas);
-	                            //Actualizamos la sombra
-	                            sombra.setLatLngs(puntosEnZoom);
-	                            sombra.setStyle({ opacity: 0.9 });
-	                            */
+	                        afterSetExtremes: function (e) {
+	                            //Obtener los límites del eje del gráfico secundario
+	                            let min = e.min;
+	                            let max = e.max;
+	                            
+	                            //Sincronizar el otro gráfico, chart, con los nuevos límites
+	                            chart2.xAxis[0].setExtremes(min, max);
 	                        }
 	                    }
 	                },
@@ -239,16 +239,13 @@
 	                        }
 	                    },
 	                    events: {
-	                        setExtremes: function (e) {
-	                        	/*
-	                            //Vemos los puntos que están visibles en el zoom
-	                            let puntosEnZoom = puntos.filter(punto => punto.x >= e.min && punto.x <= e.max);
-	                            //Recorremos los puntos y sacamos las coordenadas
-	                            puntosEnZoom = puntosEnZoom.map(punto => punto.coordenadas);
-	                            //Actualizamos la sombra
-	                            sombra.setLatLngs(puntosEnZoom);
-	                            sombra.setStyle({ opacity: 0.9 });
-	                            */
+	                        afterSetExtremes: function (e) {
+	                            //Obtener los límites del eje del gráfico secundario
+	                            let min = e.min;
+	                            let max = e.max;
+	                            
+	                            //Sincronizar el otro gráfico, chart, con los nuevos límites
+	                            chart.xAxis[0].setExtremes(min, max);
 	                        }
 	                    }
 	                },

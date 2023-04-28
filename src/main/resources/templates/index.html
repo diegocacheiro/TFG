@@ -63,7 +63,7 @@
                 </form>
             </div>
         	<div id="Guardar" style="display: none;">
-        		<h1 style="text-align: center;">Desea guardar los datos del algoritmo seleccionado?</h1>
+        		<h1 style="text-align: center;">¿Desea guardar los datos del algoritmo seleccionado?</h1>
         		<div id="Botones">
 	        		<button id="cerrarGuardado">Cerrar</button>
 	  				<button id="abrirGuardado">Guardar</button>
@@ -266,6 +266,7 @@
         </script>
         
         <script>
+       	 	document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
             //Almacena todos los puntos con la información de la traza
             var puntos;
             //Alamacena el gráico
@@ -412,10 +413,11 @@
 
             //Guardamos las capas creadas
             var layersFiltrados = new Map();
-
+            document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
             //Añadimos el evento para cuando se dibuja un circulo
             map.on('draw:created', function (e) {
                 if (e.layerType === 'circle') {
+                	document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
                     //Obtenemos el centro del circulo, del que sacaremos las coordenadas longitud y latitud
                     var center = e.layer.getLatLng();
                     //Obtenemos el radio del circulo
@@ -518,6 +520,7 @@
 
                                             //En el caso de hacer click sobre una determinada línea
                                             polyLine.on('click', function(e) {
+                                            	document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
                                                 if (flagPoly == 0){
                                                     flagPoly = 1;
                                                     //Eliminamos los elementos del mapa que no correspondan con la clave del polyline seleccionado
@@ -571,8 +574,10 @@
 
                                                                 //Visualizamos el gráfico
                                                                 document.getElementById("Grafico").style.display = "block";
+                                                                document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
                                                             },
                                                             error: function(xhr, status, error) {
+                                                            	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
                                                                 console.log(error);
                                                             } 
                                                         });
@@ -586,9 +591,11 @@
                                         } 
                                     });
                                 }
-                            } 
+                            }
+                            document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
                         },
                         error: function(){
+                        	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
                             alert("Error al realizar la consulta");
                         }
                     });
@@ -675,6 +682,7 @@
                 formulario1.style.display = "none";
                 boton2.style.opacity = "";
                 if (flag === true){
+                	document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
                     DeteccionDeBachesPorAlgorimtos(select.value, parametros);
                 } else{
                 	alert("Debes completar todos los parámetros");
@@ -718,7 +726,7 @@
             var boton6 = document.getElementById('abrirGuardado');
             boton6.addEventListener('click', function(event) {
             	//ponemos el cursor cargando
-            	document.body.style.cursor = "wait";
+				document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
             	const resultado_a_guardar = {
             		id: 1,
             		idTraza:nombreTraza,
@@ -738,7 +746,7 @@
                 })
                 //Si la respuesta es correcta, mostramos los baches detectados por el algoritmo
                 .then(response => {
-                	document.body.style.cursor = "default";
+                	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
                 	formulario2.style.display = "none";
                     boton4.style.opacity = "";
                 	if (response.ok) {
@@ -750,6 +758,7 @@
                 })
                 //Si se produce un error, lo mostramos por consola
                 .catch(error => {
+                	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
                     console.error('Se ha producido un error!', error);
                 });
             	
@@ -953,9 +962,11 @@
                     }
                     
                     control = 3;
+                    document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
                 })
                 //Si se produce un error, lo mostramos por consola
                 .catch(error => {
+                	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
                     console.error('Se ha producido un erro!', error);
                 });
             }
@@ -976,29 +987,43 @@
 	          	  tabla.tBodies[0].innerHTML = "";
 				  var filaSeleccionada1 = null;
 				  var filaSeleccionada2 = null;
+				  var nombreSeleccionado = null;
 	          	  for (var i = 0; i < array.length; i++) {
 		          	    var fila = document.createElement("tr");
 		          	    var celda1 = document.createElement("td");
 		          	    var celda2 = document.createElement("td");
 		          	    var celda3 = document.createElement("td");
 		          	  	var celda4 = document.createElement("td");
+		          	  	var celda5 = document.createElement("td");
+		          	  	var celda6 = document.createElement("td");
+		          	  	
 		          	  	var b = document.createElement("button");
+		          	    var bEliminar = document.createElement("button");
+		                var iconoEliminar = document.createElement("img");
 		          	  	
 		          	    celda1.innerHTML = array[i][0];
 		          	    celda2.innerHTML = array[i][1];
 		          	    celda3.innerHTML = array[i][2];
 		          	  	celda4.innerHTML = JSON.stringify(array[i][3]);
 		          	  	
+		          	  	celda5.appendChild(bEliminar);
+		              	celda6.appendChild(b);
+		              	
 		          	    fila.appendChild(celda1);
 		          	    fila.appendChild(celda2);
 		          	    fila.appendChild(celda3);
 		          	  	fila.appendChild(celda4);
-		          	  	fila.appendChild(b);
-						
+		          	  	fila.appendChild(celda5);
+		          	  	fila.appendChild(celda6);
+		          	  
 		          	  	b.classList.add("boton-seleccionar");
 		          	  	b.addEventListener("click", function(event) {
 		          	      // Obtener la fila correspondiente al botón seleccionado
 		          	      var fila = event.target.closest('tr');
+		          	      
+		          	 	  // Ocultar las filas que no tienen el mismo nombre en la columna 2
+		          	      var filas = tabla.tBodies[0].getElementsByTagName('tr');
+		          	    
 		          	      // Si la fila ya está seleccionada, deseleccionarla
 		          	      if (fila === filaSeleccionada1 || fila === filaSeleccionada2) {
 		          	        fila.style.backgroundColor = '';
@@ -1008,6 +1033,13 @@
 		          	          filaSeleccionada2 = null;
 		          	        }
 		          	      } else {
+		          	    	for (var i = 0; i < filas.length; i++) {
+			          	        if (filas[i] !== fila && filas[i].getElementsByTagName('td')[1].innerHTML !== fila.getElementsByTagName('td')[1].innerHTML) {
+			          	            filas[i].classList.add('oculto');
+			          	        } else {
+			          	            filas[i].classList.remove('oculto');
+			          	        }
+			          	    }
 		          	        // Si no hay ninguna fila seleccionada, seleccionar esta fila
 		          	        if (filaSeleccionada1 === null && filaSeleccionada2 === null) {
 		          	          fila.style.backgroundColor = '#D3D3D3';
@@ -1020,6 +1052,35 @@
 		          	          }
 		          	        }
 		          	      }
+		          	      
+		          	      if (null === filaSeleccionada1 && null === filaSeleccionada2){
+		          	    	for (var i = 0; i < filas.length; i++) {
+		          	    		filas[i].classList.remove('oculto');
+		          	    	}
+		          	      }
+		          	    });
+		          	  	
+		          	  	iconoEliminar.src = "Images/Papelera.png";
+		          	  	bEliminar.appendChild(iconoEliminar);
+		          	  	bEliminar.classList.add("boton-eliminar");
+		          	  	bEliminar.addEventListener("click", function(event) {
+		          	  		var fila = event.target.closest('tr');
+		          	  		if (confirm("¿Deseas eliminar los datos del algoritmo con id " + fila.getElementsByTagName("td")[0].innerHTML + "?")){
+			          	  		document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
+				          	  	$.ajax({
+				    	            url: 'http://localhost:8090/TFG/algoritmos/EliminarDatos?id1=' + fila.getElementsByTagName("td")[0].innerHTML,
+				    	            type: 'GET',
+				    	            success: function(data) {
+				    	            	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
+				    	            	alert("Se ha borrado correctamente");
+				    	            	obtenerAlgoritmosComparar();
+				    	            },
+				    	            error: function() {
+				    	            	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
+				    	                alert("Error al realizar la consulta");
+				    	            }
+				    	        });
+		          	  		}
 		          	    });
 	          	    	tabla.tBodies[0].appendChild(fila);
           	  		}
@@ -1027,7 +1088,6 @@
 	          	  	//Configuramos el botón de comparar del guardado
 	              	var boton9 = document.getElementById('CompararDosAlgoritmos');
 	              	boton9.addEventListener('click', function(event) {
-	              		event.preventDefault();
 	            	  	if (filaSeleccionada1 !==  null && filaSeleccionada2 !== null) {
 	            		  	var id1 = filaSeleccionada1.getElementsByTagName("td")[0].innerHTML;
 	            		  	var id2 = filaSeleccionada2.getElementsByTagName("td")[0].innerHTML;
@@ -1050,7 +1110,7 @@
 		                  	boton7.style.opacity = "";
 		                  	window.location.href = "Visualizar.html";
 	            	  	} else if ((filaSeleccionada1 ===  null && filaSeleccionada2 === null)){
-	            		  alert ("Es necesario selecionar uno o dos algoritmos");
+	            		 	alert ("Es necesario selecionar uno o dos algoritmos");
 	            	  	}
 	              	});
             	}

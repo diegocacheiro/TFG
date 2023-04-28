@@ -92,4 +92,15 @@ public class BasicRestController{
         }
         return ResponseEntity.ok(resultado);
     }
+    
+    @GetMapping("/algoritmos/EliminarDatos")
+    public ResponseEntity<String> eliminarAlgoritmoBache(@RequestParam("id1") Integer id1) {
+    	try {
+    		repository.deleteById(id1);
+            //repository.EliminarAlgoritmoBache(id1);
+            return ResponseEntity.ok("El objeto se eliminó correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error al eliminar el objeto");
+        }
+    }
 }
