@@ -1,485 +1,532 @@
        @font-face {
-           font-family: Dune;
-           src: url("./Dune_Rise.ttf");
+       	font-family: Dune;
+       	src: url("./Dune_Rise.ttf");
        }
 
        @font-face {
-           font-family: Exo-ExtraLight;
-           src: url("./Exo-ExtraLight.ttf");
+       	font-family: Exo-ExtraLight;
+       	src: url("./Exo-ExtraLight.ttf");
        }
 
        @font-face {
-           font-family: Exo-Light;
-           src: url("./Exo-Light.ttf");
+       	font-family: Exo-Light;
+       	src: url("./Exo-Light.ttf");
        }
-	   
-       body { 
-	       padding: 0; 
-	       margin: 0; 
+
+       body {
+       	padding: 0;
+       	margin: 0;
        }
 
        #header {
-           position: absolute;
-           top: 0%;
-           left: 0%;
-           right: 0%;
-           bottom: 93%;
-           background-color: #7a62e6;
-           box-shadow: -20px 0 20px black;
-           z-index: 150;
+       	position: absolute;
+       	top: 0%;
+       	left: 0%;
+       	right: 0%;
+       	bottom: 93%;
+       	background-color: #7a62e6;
+       	box-shadow: -20px 0 20px black;
+       	z-index: 150;
        }
 
        #header h1 {
-           margin: 0;
-           padding: 0;
-           margin-top : 1%;
-           text-align: center;
-           color: #fff;
-           font-family: "Dune";
-           font-size: 40px;
+       	margin: 0;
+       	padding: 0;
+       	margin-top: 1%;
+       	text-align: center;
+       	color: #fff;
+       	font-family: "Dune";
+       	font-size: 40px;
        }
 
        #Lateral {
-           position: absolute;
-           top: 7%;
-           left: 0;
-           right: 97%;
-           bottom: 0%;
-           background-color: #7a62e6;
-           box-shadow: 0px -20px 20px black;
-           z-index: 125;
-       }
-       
-       #MostrarForm{
-           position: absolute;
-           width: 50%; 
-           height: 3%;
-           top: 8%;
-           left: 25%;
+       	position: absolute;
+       	top: 7%;
+       	left: 0;
+       	right: 97%;
+       	bottom: 0%;
+       	background-color: #7a62e6;
+       	box-shadow: 0px -20px 20px black;
+       	z-index: 125;
        }
 
-       #ElegirAlg{
-           position: relative;
-           width: 50%; 
-           height: 3%;
-           top: 15%;
-           left: 25%;
+       #MostrarForm {
+       	position: absolute;
+       	width: 50%;
+       	height: 3%;
+       	top: 8%;
+       	left: 25%;
        }
-	
-	#GuardarAlg{
-		position: relative;
-           width: 55%; 
-           height: 4%;
-           top: 18%;
-           left: 25%;
-	}
-	
-	#CompararAlg{
-		position: relative;
-           width: 55%; 
-           height: 4%;
-           top: 21%;
-           left: 25%;
-	}
-	
+
+       #ElegirAlg {
+       	position: relative;
+       	width: 50%;
+       	height: 3%;
+       	top: 15%;
+       	left: 25%;
+       }
+
+       #GuardarAlg {
+       	position: relative;
+       	width: 55%;
+       	height: 4%;
+       	top: 18%;
+       	left: 25%;
+       }
+
+       #CompararAlg {
+       	position: relative;
+       	width: 55%;
+       	height: 4%;
+       	top: 21%;
+       	left: 25%;
+       }
+	   
+	   #help{
+	    position: relative;
+       	width: 70%;
+       	height: 6%;
+       	top: 80%;
+       	left: 13%;
+	   }
+	   
        #MostrarForm:hover {
-           opacity: 0.5;
+       	opacity: 0.5;
        }
 
        #ElegirAlg:hover {
-           opacity: 0.5;
+       	opacity: 0.5;
        }
 
-	#GuardarAlg:hover {
-           opacity: 0.5;
+       #GuardarAlg:hover {
+       	opacity: 0.5;
        }
-       
+
        #CompararAlg:hover {
-           opacity: 0.5;
+       	opacity: 0.5;
        }
        
+       #help:hover {
+       	opacity: 0.5;
+       }
+
        #Contenedor {
-           position: absolute;
-           top: 7%;
-           left: 3%;
-           right: 0;
-           bottom: 0;
+       	position: absolute;
+       	top: 7%;
+       	left: 3%;
+       	right: 0;
+       	bottom: 0;
        }
 
        #Mapa {
-           height: 99%;
-           width: 100%;
-           z-index: 50;
-           top: 1%;
-           bottom: 2%;
+       	height: 99%;
+       	width: 100%;
+       	z-index: 50;
+       	top: 1%;
+       	bottom: 2%;
        }
-		
-	   #resetbutton {
-	   	   position: absolute;
-	   	   height: 30px;
-           width: 28px;
-	   	   background-color: #ffffff;
-	   	   z-index: 70;
-	   	   top: 140px; 
-	   	   left: 11px;
-	   	   border: 2px solid grey;
-	   }
-	   
-	   #resetbutton:hover{
-	   		background-color: #dddddd;
-	   }
-	   
+
+       #resetbutton {
+       	position: absolute;
+       	height: 30px;
+       	width: 28px;
+       	background-color: #ffffff;
+       	z-index: 70;
+       	top: 140px;
+       	left: 11px;
+       	border: 2px solid grey;
+       }
+
+       #resetbutton:hover {
+       	background-color: #dddddd;
+       }
+       
        #Grafico {
-           position: absolute;
-           height: 30%;
-           width: 60%;
-           z-index: 75;
-           bottom: 2%;
-           left: 20%;
-           background-color: #ffffff;
-           opacity: 0.8;
-           border-radius: 10px;
-           box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+       	position: absolute;
+       	height: 30%;
+       	width: 60%;
+       	z-index: 75;
+       	bottom: 2%;
+       	left: 20%;
+       	background-color: #ffffff;
+       	opacity: 0.8;
+       	border-radius: 10px;
+       	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+       }
+			
+	   #Ayuda {
+        position: absolute;
+       	height: 100%;
+       	width: 25%;
+       	top: 0%;
+       	left: 0%;
+       	z-index: 100;
+       	background-color: rgba(255, 255, 255, 0.568);
+       	backdrop-filter: blur(5px);
+       }
+       
+       #Ayuda h1 {
+       	text-align: justify;
+       	font-family: "Exo-ExtraLight";
+       	line-height: 1;
+       }
+	   
+	   #Ayuda h2 {
+       	margin-left: 10px;
+       	font-family: "Exo-ExtraLight";
+       }
+	   #Ayuda input {
+	    margin-left: 10px;
+	    display: inline-block;
+	    width: 30px; /* Modifica este valor para ajustar el ancho de los inputs */
+	    vertical-align: middle;
+	  }
+       #Ayuda p {
+       	display: inline-block;
+       	margin-left: 10px;
+       	text-align: justify;
+       	word-wrap: break-word;
+       	font-family: "Exo-Light";
+       	line-height: 1;
        }
        
        #Filtros {
-           position: absolute;
-           height: 100%;
-           width: 20%;
-           top: 0%;
-           left: 0%;
-           z-index: 100;
-           background-color:rgba(255, 255, 255, 0.568);
-           backdrop-filter: blur(5px);
+       	position: absolute;
+       	height: 100%;
+       	width: 20%;
+       	top: 0%;
+       	left: 0%;
+       	z-index: 100;
+       	background-color: rgba(255, 255, 255, 0.568);
+       	backdrop-filter: blur(5px);
        }
 
-       #Filtros h1{
-           text-align: justify;
-           font-family: "Exo-ExtraLight";
+       #Filtros h1 {
+       	text-align: justify;
+       	font-family: "Exo-ExtraLight";
        }
 
-       #Filtros p{
-       	   text-align: justify;
-           font-family: "Exo-Light";
+       #Filtros p {
+       	text-align: justify;
+       	font-family: "Exo-Light";
        }
 
        #Filtros label {
-           display: block;
-           font-weight:bold;
-           margin-bottom: 5px;
-           margin-left: 5%;
-           font-family: "Exo-Light";
+       	display: block;
+       	font-weight: bold;
+       	margin-bottom: 5px;
+       	margin-left: 5%;
+       	font-family: "Exo-Light";
        }
 
        #Filtros input {
-           box-sizing: border-box;
-           padding: 5px;
-           width: 89%;
-           margin-bottom: 10px;
-           margin-left: 5%;
-           margin-right: 5%;
-           border: 1px solid #ccc;
-           border-radius: 4px;
-           font-family: "Exo-Light";
+       	box-sizing: border-box;
+       	padding: 5px;
+       	width: 89%;
+       	margin-bottom: 10px;
+       	margin-left: 5%;
+       	margin-right: 5%;
+       	border: 1px solid #ccc;
+       	border-radius: 4px;
+       	font-family: "Exo-Light";
        }
 
        #Filtros button {
-           display: block;
-           margin: 0 auto;
-           width: 200px;
-           padding: 10px;
-           font-size: 16px;
-           color: #333;
-           background-color: #fff;
-           border: 1px solid #ccc;
-           border-radius: 5px;
-           box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-           cursor: pointer;
-           margin-top: 5%;
-           font-family: "Exo-Light";
+       	display: block;
+       	margin: 0 auto;
+       	width: 200px;
+       	padding: 10px;
+       	font-size: 16px;
+       	color: #333;
+       	background-color: #fff;
+       	border: 1px solid #ccc;
+       	border-radius: 5px;
+       	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+       	cursor: pointer;
+       	margin-top: 5%;
+       	font-family: "Exo-Light";
        }
 
        #Filtros button:hover {
-           background-color: #f5f5f5;
+       	background-color: #f5f5f5;
        }
 
        #FiltroAlgoritmo {
-           position: absolute;
-           height: 100%;
-           width: 20%;
-           top: 0%;
-           left: 0%;
-           z-index: 100;
-           background-color:rgba(255, 255, 255, 0.568);
-           backdrop-filter: blur(5px);
+       	position: absolute;
+       	height: 100%;
+       	width: 20%;
+       	top: 0%;
+       	left: 0%;
+       	z-index: 100;
+       	background-color: rgba(255, 255, 255, 0.568);
+       	backdrop-filter: blur(5px);
        }
 
-       #FiltroAlgoritmo h1{
-           font-family: "Exo-ExtraLight";
+       #FiltroAlgoritmo h1 {
+       	font-family: "Exo-ExtraLight";
        }
-	   
-	   #FiltroAlgoritmo h2 {
-	   		margin-left: 5%;
-            margin-right: 5%;
-	   	    font-family: "Exo-ExtraLight";
+
+       #FiltroAlgoritmo h2 {
+       	margin-left: 5%;
+       	margin-right: 5%;
+       	font-family: "Exo-ExtraLight";
        }
-       
-       #FiltroAlgoritmo p{
-       	   width: 85%;
-       	   margin-left: 5%;
-           margin-right: 5%;
-           text-align: justify;
-           font-family: "Exo-Light";
+
+       #FiltroAlgoritmo p {
+       	width: 85%;
+       	margin-left: 5%;
+       	margin-right: 5%;
+       	text-align: justify;
+       	font-family: "Exo-Light";
        }
-       
+
        .label-parametro {
-		  margin-left: 5%;
-		  text-align: justify;
-		  font-family: "Exo-Light";
-		}
-		
-		.input-parametro {
-		  width:85%;
-		  margin-left: 5%;
-		  margin-right: 5%;
-		  font-family: "Exo-Light";
-		}
+       	margin-left: 5%;
+       	text-align: justify;
+       	font-family: "Exo-Light";
+       }
 
-       #FiltroAlgoritmo select{
-           width: 85%;
-           color: #333;
-           padding: 10px;
-           font-size: 16px;
-           border-radius: 5px;
-           -webkit-appearance: none;
-           -moz-appearance: none;
-           appearance: none;
-           background-repeat: no-repeat;
-           background-position: right center;
-           margin-left: 5%;
-           margin-right: 5%;
-           font-family: "Exo-Light";
+       .input-parametro {
+       	width: 85%;
+       	margin-left: 5%;
+       	margin-right: 5%;
+       	font-family: "Exo-Light";
        }
-       
+
+       #FiltroAlgoritmo select {
+       	width: 85%;
+       	color: #333;
+       	padding: 10px;
+       	font-size: 16px;
+       	border-radius: 5px;
+       	-webkit-appearance: none;
+       	-moz-appearance: none;
+       	appearance: none;
+       	background-repeat: no-repeat;
+       	background-position: right center;
+       	margin-left: 5%;
+       	margin-right: 5%;
+       	font-family: "Exo-Light";
+       }
+
        #FiltroAlgoritmo select:hover {
-           background-color: #e6e6e6;
-         }
-         
-       #FiltroAlgoritmo select:focus {
-           outline: none;
-           box-shadow: 0 0 5px 1px #666;
+       	background-color: #e6e6e6;
        }
-       
+
+       #FiltroAlgoritmo select:focus {
+       	outline: none;
+       	box-shadow: 0 0 5px 1px #666;
+       }
+
        #FiltroAlgoritmo button {
-           display: block;
-           margin: 0 auto;
-           width: 200px;
-           padding: 10px;
-           font-size: 16px;
-           font-family: "Exo-Light";
-           color: #333;
-           background-color: #fff;
-           border: 1px solid #ccc;
-           border-radius: 5px;
-           box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-           cursor: pointer;
-           align-items: center;
-           margin-top: 30%;
+       	display: block;
+       	margin: 0 auto;
+       	width: 200px;
+       	padding: 10px;
+       	font-size: 16px;
+       	font-family: "Exo-Light";
+       	color: #333;
+       	background-color: #fff;
+       	border: 1px solid #ccc;
+       	border-radius: 5px;
+       	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+       	cursor: pointer;
+       	align-items: center;
+       	margin-top: 30%;
        }
 
        #FiltroAlgoritmo button:hover {
-           background-color: #f5f5f5;
+       	background-color: #f5f5f5;
        }
-		
+
        #Guardar {
-       	  position: absolute;
-       	  top: 50%;
-		  left: 50%;
-		  width: 300px;
-		  height: 150px;
-		  transform: translate(-50%, -50%);
-          z-index: 100;
-          background-color:rgba(255, 255, 255, 0.568);
-          backdrop-filter: blur(5px);
-		}
-		
-		#Guardar h1{
-		  font-family: "Exo-ExtraLight";
-		  font-size: 20px;
-		}
-		
-		#Botones {
-		  position: absolute;
-		  left: 0;
-		  right: 0;
-		  bottom: 20px;
-		  text-align: center;
-		}
-		
-		#cerrarGuardado {
-		  margin-right: 15px;
-		  font-size: 20px;
-          font-family: "Exo-Light";
-          background-color: #fff;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-          cursor: pointer;
-		}
-		
-		#cerrarGuardado:hover {
-          background-color: #f5f5f5;
+       	position: absolute;
+       	top: 50%;
+       	left: 50%;
+       	width: 300px;
+       	height: 150px;
+       	transform: translate(-50%, -50%);
+       	z-index: 100;
+       	background-color: rgba(255, 255, 255, 0.568);
+       	backdrop-filter: blur(5px);
        }
-       
-		#abrirGuardado {
-		  margin-left: 15px;
-		  font-size: 20px;
-          font-family: "Exo-Light";
-          background-color: #fff;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-          cursor: pointer;
-		}
-		
-		#abrirGuardado:hover {
-          background-color: #f5f5f5;
+
+       #Guardar h1 {
+       	font-family: "Exo-ExtraLight";
+       	font-size: 20px;
        }
-       
-       
+
+       #Botones {
+       	position: absolute;
+       	left: 0;
+       	right: 0;
+       	bottom: 20px;
+       	text-align: center;
+       }
+
+       #cerrarGuardado {
+       	margin-right: 15px;
+       	font-size: 20px;
+       	font-family: "Exo-Light";
+       	background-color: #fff;
+       	border: 1px solid #ccc;
+       	border-radius: 5px;
+       	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+       	cursor: pointer;
+       }
+
+       #cerrarGuardado:hover {
+       	background-color: #f5f5f5;
+       }
+
+       #abrirGuardado {
+       	margin-left: 15px;
+       	font-size: 20px;
+       	font-family: "Exo-Light";
+       	background-color: #fff;
+       	border: 1px solid #ccc;
+       	border-radius: 5px;
+       	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+       	cursor: pointer;
+       }
+
+       #abrirGuardado:hover {
+       	background-color: #f5f5f5;
+       }
+
+
        #VerTabla {
-       	  position: absolute;
-       	  top: 50%;
-		  left: 50%;
-		  transform: translate(-50%, -50%);
-		  width: 700px;
-		  height: 500px;
-          z-index: 100;
-          background-color:rgba(255, 255, 255, 0.568);
-          backdrop-filter: blur(5px);
-          border-radius: 5px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-          overflow-y: auto;
-		}
-		
-		#VerTabla h1{
-		  font-family: "Exo-ExtraLight";
-		  font-size: 30px;
-		  text-align: center;
-		}
-		
-		#VerTabla p{
-           font-family: "Exo-Light";
-           text-align: center;
+       	position: absolute;
+       	top: 50%;
+       	left: 50%;
+       	transform: translate(-50%, -50%);
+       	width: 700px;
+       	height: 500px;
+       	z-index: 100;
+       	background-color: rgba(255, 255, 255, 0.568);
+       	backdrop-filter: blur(5px);
+       	border-radius: 5px;
+       	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+       	overflow-y: auto;
        }
-       
+
+       #VerTabla h1 {
+       	font-family: "Exo-ExtraLight";
+       	font-size: 30px;
+       	text-align: center;
+       }
+
+       #VerTabla p {
+       	font-family: "Exo-Light";
+       	text-align: center;
+       }
+
        #ContenerTabla {
-       		width: 100%;
-		  	height: 65%;
-		  	overflow-y: auto;
+       	width: 100%;
+       	height: 65%;
+       	overflow-y: auto;
        }
-       
-	   #VerTabla table {
-		  width: 95%;
-		  margin: 0 auto;
-		  border-collapse: collapse;
-		  text-align: center;
-		}
-		
-		th,
-		td {
-		  font-family: "Exo-Light";
-		  padding: 10px;
-		}
-		
-		tbody tr:nth-child(even) {
-		  background-color: #f2f2f2;
-		}
-		
-		#VerTabla tbody tr:hover {
-		  background-color: #e5e5e5;
-		}
-		
-		.boton-seleccionar {
-		  background-color: transparent;
-		  color: black;
-		  border: none;
-		  cursor: pointer;
-		  padding: 8px 16px;
-		  font-size: 16px;
-		  border-radius: 4px;
-		  transition: background-color 0.2s ease;
-		}
-		
-		.boton-seleccionar:hover:not(:disabled) {
-		  background-color: #b5b5b5;
-		}
-		
-		.boton-seleccionar:after {
-		  content: "\2713";
-		  margin-left: 5px;
-		  font-size: 20px;
-		}
-		
-		.boton-eliminar {
-		  background-color: transparent;
-		  border: none;
-		  cursor: pointer;
-		  padding: 8px 16px;
-		  font-size: 16px;
-		  border-radius: 4px;
-		  transition: background-color 0.2s ease;
-		}
-		
-		.boton-eliminar img{
-			width: 30px;
-  		  	height: 30px;
-		}
-		.boton-eliminar:hover:not(:disabled) {
-		  background-color: #b5b5b5;
-		}
-		
-		#Botonesomparacion {
-		  position: relative;
-		  left: 0;
-		  right: 0;
-		  top: 15px;
-		  bottom: 5px;
-		  text-align: center;
-		}
-		
-		#cerrarComparacion {
-		  margin-right: 15px;
-		  font-size: 20px;
-          font-family: "Exo-Light";
-          background-color: #fff;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-          cursor: pointer;
-		}
-		
-		#cerrarComparacion:hover {
-          background-color: #f5f5f5;
+
+       #VerTabla table {
+       	width: 95%;
+       	margin: 0 auto;
+       	border-collapse: collapse;
+       	text-align: center;
        }
-       
-		#CompararDosAlgoritmos {
-		  margin-left: 15px;
-		  font-size: 20px;
-          font-family: "Exo-Light";
-          background-color: #fff;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-          cursor: pointer;
-		}
-		
-		#CompararDosAlgoritmos:hover {
-          background-color: #f5f5f5;
+
+       th,
+       td {
+       	font-family: "Exo-Light";
+       	padding: 10px;
        }
-       
+
+       tbody tr:nth-child(even) {
+       	background-color: #f2f2f2;
+       }
+
+       #VerTabla tbody tr:hover {
+       	background-color: #e5e5e5;
+       }
+
+       .boton-seleccionar {
+       	background-color: transparent;
+       	color: black;
+       	border: none;
+       	cursor: pointer;
+       	padding: 8px 16px;
+       	font-size: 16px;
+       	border-radius: 4px;
+       	transition: background-color 0.2s ease;
+       }
+
+       .boton-seleccionar:hover:not(:disabled) {
+       	background-color: #b5b5b5;
+       }
+
+       .boton-seleccionar:after {
+       	content: "\2713";
+       	margin-left: 5px;
+       	font-size: 20px;
+       }
+
+       .boton-eliminar {
+       	background-color: transparent;
+       	border: none;
+       	cursor: pointer;
+       	padding: 8px 16px;
+       	font-size: 16px;
+       	border-radius: 4px;
+       	transition: background-color 0.2s ease;
+       }
+
+       .boton-eliminar img {
+       	width: 30px;
+       	height: 30px;
+       }
+
+       .boton-eliminar:hover:not(:disabled) {
+       	background-color: #b5b5b5;
+       }
+
+       #Botonesomparacion {
+       	position: relative;
+       	left: 0;
+       	right: 0;
+       	top: 15px;
+       	bottom: 5px;
+       	text-align: center;
+       }
+
+       #cerrarComparacion {
+       	margin-right: 15px;
+       	font-size: 20px;
+       	font-family: "Exo-Light";
+       	background-color: #fff;
+       	border: 1px solid #ccc;
+       	border-radius: 5px;
+       	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+       	cursor: pointer;
+       }
+
+       #cerrarComparacion:hover {
+       	background-color: #f5f5f5;
+       }
+
+       #CompararDosAlgoritmos {
+       	margin-left: 15px;
+       	font-size: 20px;
+       	font-family: "Exo-Light";
+       	background-color: #fff;
+       	border: 1px solid #ccc;
+       	border-radius: 5px;
+       	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+       	cursor: pointer;
+       }
+
+       #CompararDosAlgoritmos:hover {
+       	background-color: #f5f5f5;
+       }
+
        .oculto {
-		    display: none;
-		}
-		
-       
+       	display: none;
+       }

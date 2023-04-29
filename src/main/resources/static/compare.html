@@ -1,340 +1,343 @@
 <!doctype html>
 <html lang="es">
-    <head>
-        <meta charset="utf-8">   	
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>BumpApp</title>
-        <link rel="stylesheet" href="CSS/Compare.css" />
-        <script src="https://code.highcharts.com/highcharts.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    </head>
-    <body>
-    	<div id="header">    
-            <h1>BumpApp</h1>
-        </div>
-		<div id="Lateral"> 
-	    	<input id="Atras" type="image" src="Images/Atras.png">
-	    </div>
-		<div id="Contenedor">
-        	<div id="Grafico"></div>
-        	<div id="Grafico1"></div>
-        </div>
-        
-        <script>
-        	document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
-	        var boton = document.getElementById('Atras');
-	        boton.addEventListener('click', function(event) {
-	        	window.location.href = "http://localhost:8090";
-	        });
-        </script>
-        
-        <script>
-	        var chart = null;
-	        var chart2 = null;
-        	//Obtenemos los valores del localstorage
-	        var id1 = parseInt(localStorage.getItem("id1"));
-	        var id2 = parseInt(localStorage.getItem("id2"));
-	      	//Creamos una petición get al servidor de spring boot para obtener los datos de los algoritmos que hemos seleccionado
-	        $.ajax({
-	            url: 'http://localhost:8090/TFG/algoritmos/ComparacionDatos?id1=' + id1 + '&id2=' + id2,
-	            type: 'GET',
-	            success: function(data) {
-	            	//Pintar los gráficos
-	            	graficar(data[0].idTraza, data[0].algoritmoNombre, data[0].parametros, data[0].puntosTraza, data[0].resultadoAlgoritmo);
-	            	graficar2(data[1].idTraza, data[1].algoritmoNombre, data[1].parametros, data[1].puntosTraza, data[1].resultadoAlgoritmo);
-	            	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
-	            },
-	            error: function() {
-	            	document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
-	                alert("Error al realizar la consulta");
-	            }
-	        });
-        </script>
-        
-        <script>
-	        function graficar(trazaNombre, algoritmo, parametros, puntos, resultado) {
-	        	//Creamos un array para almacenar los índices de los puntos que corresponden a baches
-                let indicesBache = puntos.filter(punto => punto.baches === 1).map(punto => punto.x);
-	        	
-	            // Crear el grafico
-	            chart = Highcharts.chart('Grafico', {
-	                chart: {
-	                    type: 'line',
-	                    animation: false,
-	                    zoomType: 'x',
-	                    panning: true,
-	                    panKey: 'shift',
-	                    events: {
-	                        load: function () {
-	                            chartIsLoaded = true;
-	
-	                            c = this;
-	                            // Recorremos los índices de los puntos con baches para crear las plotBands
-	                            for (let i = 0; i < indicesBache.length; i++) {
-	                                let start = puntos[indicesBache[i]].x - 1.5;
-	                                let end = puntos[indicesBache[i]].x + 1.5;
-	                                c.xAxis[0].addPlotBand({
-	                                    from: start,
-	                                    to: end,
-	                                    color: '#f80000', //E66262
-	                                    id: `plotband-${indicesBache[i]}`
-	                                });
-	                            }
-	                        }
-	                    }
-	                },
-	                title: {
-	                    text: trazaNombre + '->' + algoritmo + '->' + JSON.stringify(parametros),
-	                    style: {
-	                        fontSize: '25px',
-	                        fontFamily: "Exo-ExtraLight"
-	                    }
-	                },
-	                xAxis: {
-	                    labels: {
-	                        style: {
-	                            fontFamily: "Exo-Light"
-	                        }
-	                    },
-	                    events: {
-	                        afterSetExtremes: function (e) {
-	                            //Obtener los límites del eje del gráfico secundario
-	                            let min = e.min;
-	                            let max = e.max;
-	                            
-	                            //Sincronizar el otro gráfico, chart, con los nuevos límites
-	                            chart2.xAxis[0].setExtremes(min, max);
-	                        }
-	                    }
-	                },
-	                yAxis:[{ //Se muestran aquí las aceleraciones verticales
-	                    title: {
-	                        text: 'Aceleración vertical'
-	                    }, 
-	                    labels: {
-	                        style: {
-	                            fontFamily: "Exo-Light"
-	                        }
-	                    }
-	                }, { //Se muestran aquí las velocidades
-	                    opposite: true,
-	                    title: {
-	                        text: 'Velocidad'
-	                    },
-	                    labels: {
-	                        style: {
-	                            fontFamily: "Exo-Light"
-	                        }
-	                    }
-	                }],
-	                series: [
-	                    {
-	                        name: 'Aceleración vertical',
-	                        color: '#7a62e6',
-	                        marker: {
-	                            radius: 3,
-	                            symbol: 'circle'
-	                        },
-	                        data: puntos.map(punto => punto.y),
-	                        yAxis: 0
-	                    },
-	                    {
-	                        name: 'Velocidad',
-	                        color: '#2d1a54',
-	                        marker: {
-	                            radius: 3,
-	                            symbol: 'circle'
-	                        },
-	                        data: puntos.map(punto => punto.velocidad),
-	                        yAxis: 1
-	                    }
-	                ],
-	                tooltip:{
-	                    formatter: function() {
-	                        return `Aceleración vertical ${puntos[this.point.x].y} <br>Coordenada: ${puntos[this.point.x].coordenadas} <br>Velocidad: ${puntos[this.point.x].velocidad}`;
-	                    }
-	                },
-	                legend: {
-	                    layout: 'vertical',
-	                    align: 'right',
-	                    verticalAlign: 'middle'
-	                },
-	                credits: {
-	                    enabled: false
-	                },
-	                plotOptions: {
-	                    series: {
-	                        point: {
-	                            events: {
-	                                mouseOver: function () {
-	                                    if (chartIsLoaded) {
-	                                    }
-	                                },
-	                            }
-	                        },
-	                    }
-	                }
-	            });
-	            //Evento render del chart
-	            chart.render(function () {
-	                //Actualizar la variable de estado
-	                chartIsLoaded = true;
-	            });
-	            
-	         	// Recorremos los índices de los puntos con baches para crear las plotBands sobre el chart
-                for (let i = 0; i < resultado.length; i++) {
-                    let start = resultado[i].x - 1;
-                    let end = resultado[i].x + 1;
-                    chart.xAxis[0].addPlotBand({
-                        from: start,
-                        to: end,
-                        color: '#00FA27',
-                        id: `plotband-${resultado[i]}`
-                    });
-                }
-	        }
-	        
-	        function graficar2(trazaNombre, algoritmo, parametros, puntos, resultado) {
-	        	//Creamos un array para almacenar los índices de los puntos que corresponden a baches
-                let indicesBache = puntos.filter(punto => punto.baches === 1).map(punto => punto.x);
-	        	
-	            // Crear el grafico
-	            chart2 = Highcharts.chart('Grafico1', {
-	                chart: {
-	                    type: 'line',
-	                    animation: false,
-	                    zoomType: 'x',
-	                    panning: true,
-	                    panKey: 'shift',
-	                    events: {
-	                        load: function () {
-	                            chartIsLoaded = true;
-	
-	                            c = this;
-	                            // Recorremos los índices de los puntos con baches para crear las plotBands
-	                            for (let i = 0; i < indicesBache.length; i++) {
-	                                let start = puntos[indicesBache[i]].x - 1.5;
-	                                let end = puntos[indicesBache[i]].x + 1.5;
-	                                c.xAxis[0].addPlotBand({
-	                                    from: start,
-	                                    to: end,
-	                                    color: '#f80000', //E66262
-	                                    id: `plotband-${indicesBache[i]}`
-	                                });
-	                            }
-	                        }
-	                    }
-	                },
-	                title: {
-	                    text: trazaNombre + '->' + algoritmo + '->' + JSON.stringify(parametros),
-	                    style: {
-	                        fontSize: '25px',
-	                        fontFamily: "Exo-ExtraLight"
-	                    }
-	                },
-	                xAxis: {
-	                    labels: {
-	                        style: {
-	                            fontFamily: "Exo-Light"
-	                        }
-	                    },
-	                    events: {
-	                        afterSetExtremes: function (e) {
-	                            //Obtener los límites del eje del gráfico secundario
-	                            let min = e.min;
-	                            let max = e.max;
-	                            
-	                            //Sincronizar el otro gráfico, chart, con los nuevos límites
-	                            chart.xAxis[0].setExtremes(min, max);
-	                        }
-	                    }
-	                },
-	                yAxis:[{ //Se muestran aquí las aceleraciones verticales
-	                    title: {
-	                        text: 'Aceleración vertical'
-	                    }, 
-	                    labels: {
-	                        style: {
-	                            fontFamily: "Exo-Light"
-	                        }
-	                    }
-	                }, { //Se muestran aquí las velocidades
-	                    opposite: true,
-	                    title: {
-	                        text: 'Velocidad'
-	                    },
-	                    labels: {
-	                        style: {
-	                            fontFamily: "Exo-Light"
-	                        }
-	                    }
-	                }],
-	                series: [
-	                    {
-	                        name: 'Aceleración vertical',
-	                        color: '#7a62e6',
-	                        marker: {
-	                            radius: 3,
-	                            symbol: 'circle'
-	                        },
-	                        data: puntos.map(punto => punto.y),
-	                        yAxis: 0
-	                    },
-	                    {
-	                        name: 'Velocidad',
-	                        color: '#2d1a54',
-	                        marker: {
-	                            radius: 3,
-	                            symbol: 'circle'
-	                        },
-	                        data: puntos.map(punto => punto.velocidad),
-	                        yAxis: 1
-	                    }
-	                ],
-	                tooltip:{
-	                    formatter: function() {
-	                        return `Aceleración vertical ${puntos[this.point.x].y} <br>Coordenada: ${puntos[this.point.x].coordenadas} <br>Velocidad: ${puntos[this.point.x].velocidad}`;
-	                    }
-	                },
-	                legend: {
-	                    layout: 'vertical',
-	                    align: 'right',
-	                    verticalAlign: 'middle'
-	                },
-	                credits: {
-	                    enabled: false
-	                },
-	                plotOptions: {
-	                    series: {
-	                        point: {
-	                            events: {
-	                                mouseOver: function () {
-	                                    if (chartIsLoaded) {
-	                                    }
-	                                },
-	                            }
-	                        },
-	                    }
-	                }
-	            });
-	            //Evento render del chart
-	            chart2.render(function () {
-	                //Actualizar la variable de estado
-	                chartIsLoaded = true;
-	            });
-	            
-	         	// Recorremos los índices de los puntos con baches para crear las plotBands sobre el chart
-                for (let i = 0; i < resultado.length; i++) {
-                    let start = resultado[i].x - 1;
-                    let end = resultado[i].x + 1;
-                    chart2.xAxis[0].addPlotBand({
-                        from: start,
-                        to: end,
-                        color: '#00FA27',
-                        id: `plotband-${resultado[i]}`
-                    });
-                }
-	        }
-        </script>
-	</body>
- </html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>BumpApp</title>
+	<link rel="stylesheet" href="CSS/Compare.css" />
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+	<div id="header">
+		<h1>BumpApp</h1>
+	</div>
+	<div id="Lateral">
+		<input id="Atras" type="image" src="Images/Atras.png">
+	</div>
+	<div id="Contenedor">
+		<div id="Grafico"></div>
+		<div id="Grafico1"></div>
+	</div>
+
+	<script>
+		document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
+		var boton = document.getElementById('Atras');
+		boton.addEventListener('click', function (event) {
+			window.location.href = "http://localhost:8090";
+		});
+	</script>
+
+	<script>
+		var chart = null;
+		var chart2 = null;
+		//Obtenemos los valores del localstorage
+		var id1 = parseInt(localStorage.getItem("id1"));
+		var id2 = parseInt(localStorage.getItem("id2"));
+		//Creamos una petición get al servidor de spring boot para obtener los datos de los algoritmos que hemos seleccionado
+		$.ajax({
+			url: 'http://localhost:8090/TFG/algoritmos/ComparacionDatos?id1=' + id1 + '&id2=' + id2,
+			type: 'GET',
+			success: function (data) {
+				//Pintar los gráficos
+				graficar(data[0].idTraza, data[0].algoritmoNombre, data[0].parametros, data[0].puntosTraza, data[0].resultadoAlgoritmo);
+				graficar2(data[1].idTraza, data[1].algoritmoNombre, data[1].parametros, data[1].puntosTraza, data[1].resultadoAlgoritmo);
+				document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
+			},
+			error: function () {
+				document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
+				alert("Error al realizar la consulta");
+			}
+		});
+	</script>
+
+	<script>
+		function graficar(trazaNombre, algoritmo, parametros, puntos, resultado) {
+			//Creamos un array para almacenar los índices de los puntos que corresponden a baches
+			let indicesBache = puntos.filter(punto => punto.baches === 1).map(punto => punto.x);
+
+			// Crear el grafico
+			chart = Highcharts.chart('Grafico', {
+				chart: {
+					type: 'line',
+					animation: false,
+					zoomType: 'x',
+					panning: true,
+					panKey: 'shift',
+					events: {
+						load: function () {
+							chartIsLoaded = true;
+
+							c = this;
+							// Recorremos los índices de los puntos con baches para crear las plotBands
+							for (let i = 0; i < indicesBache.length; i++) {
+								let start = puntos[indicesBache[i]].x - 1.5;
+								let end = puntos[indicesBache[i]].x + 1.5;
+								c.xAxis[0].addPlotBand({
+									from: start,
+									to: end,
+									color: '#f80000', //E66262
+									id: `plotband-${indicesBache[i]}`
+								});
+							}
+						}
+					}
+				},
+				title: {
+					text: trazaNombre + '->' + algoritmo + '->' + JSON.stringify(parametros),
+					style: {
+						fontSize: '25px',
+						fontFamily: "Exo-ExtraLight"
+					}
+				},
+				xAxis: {
+					labels: {
+						style: {
+							fontFamily: "Exo-Light"
+						}
+					},
+					events: {
+						afterSetExtremes: function (e) {
+							//Obtener los límites del eje del gráfico secundario
+							let min = e.min;
+							let max = e.max;
+
+							//Sincronizar el otro gráfico, chart, con los nuevos límites
+							chart2.xAxis[0].setExtremes(min, max);
+						}
+					}
+				},
+				yAxis: [{ //Se muestran aquí las aceleraciones verticales
+					title: {
+						text: 'Aceleración vertical'
+					},
+					labels: {
+						style: {
+							fontFamily: "Exo-Light"
+						}
+					}
+				}, { //Se muestran aquí las velocidades
+					opposite: true,
+					title: {
+						text: 'Velocidad'
+					},
+					labels: {
+						style: {
+							fontFamily: "Exo-Light"
+						}
+					}
+				}],
+				series: [
+					{
+						name: 'Aceleración vertical',
+						color: '#7a62e6',
+						marker: {
+							radius: 3,
+							symbol: 'circle'
+						},
+						data: puntos.map(punto => punto.y),
+						yAxis: 0
+					},
+					{
+						name: 'Velocidad',
+						color: '#2d1a54',
+						marker: {
+							radius: 3,
+							symbol: 'circle'
+						},
+						data: puntos.map(punto => punto.velocidad),
+						yAxis: 1
+					}
+				],
+				tooltip: {
+					formatter: function () {
+						return `Aceleración vertical ${puntos[this.point.x].y} <br>Coordenada: ${puntos[this.point.x].coordenadas} <br>Velocidad: ${puntos[this.point.x].velocidad}`;
+					}
+				},
+				legend: {
+					layout: 'vertical',
+					align: 'right',
+					verticalAlign: 'middle'
+				},
+				credits: {
+					enabled: false
+				},
+				plotOptions: {
+					series: {
+						point: {
+							events: {
+								mouseOver: function () {
+									if (chartIsLoaded) {
+									}
+								},
+							}
+						},
+					}
+				}
+			});
+			//Evento render del chart
+			chart.render(function () {
+				//Actualizar la variable de estado
+				chartIsLoaded = true;
+			});
+
+			// Recorremos los índices de los puntos con baches para crear las plotBands sobre el chart
+			for (let i = 0; i < resultado.length; i++) {
+				let start = resultado[i].x - 1;
+				let end = resultado[i].x + 1;
+				chart.xAxis[0].addPlotBand({
+					from: start,
+					to: end,
+					color: '#00FA27',
+					id: `plotband-${resultado[i]}`
+				});
+			}
+		}
+
+		function graficar2(trazaNombre, algoritmo, parametros, puntos, resultado) {
+			//Creamos un array para almacenar los índices de los puntos que corresponden a baches
+			let indicesBache = puntos.filter(punto => punto.baches === 1).map(punto => punto.x);
+
+			// Crear el grafico
+			chart2 = Highcharts.chart('Grafico1', {
+				chart: {
+					type: 'line',
+					animation: false,
+					zoomType: 'x',
+					panning: true,
+					panKey: 'shift',
+					events: {
+						load: function () {
+							chartIsLoaded = true;
+
+							c = this;
+							// Recorremos los índices de los puntos con baches para crear las plotBands
+							for (let i = 0; i < indicesBache.length; i++) {
+								let start = puntos[indicesBache[i]].x - 1.5;
+								let end = puntos[indicesBache[i]].x + 1.5;
+								c.xAxis[0].addPlotBand({
+									from: start,
+									to: end,
+									color: '#f80000', //E66262
+									id: `plotband-${indicesBache[i]}`
+								});
+							}
+						}
+					}
+				},
+				title: {
+					text: trazaNombre + '->' + algoritmo + '->' + JSON.stringify(parametros),
+					style: {
+						fontSize: '25px',
+						fontFamily: "Exo-ExtraLight"
+					}
+				},
+				xAxis: {
+					labels: {
+						style: {
+							fontFamily: "Exo-Light"
+						}
+					},
+					events: {
+						afterSetExtremes: function (e) {
+							//Obtener los límites del eje del gráfico secundario
+							let min = e.min;
+							let max = e.max;
+
+							//Sincronizar el otro gráfico, chart, con los nuevos límites
+							chart.xAxis[0].setExtremes(min, max);
+						}
+					}
+				},
+				yAxis: [{ //Se muestran aquí las aceleraciones verticales
+					title: {
+						text: 'Aceleración vertical'
+					},
+					labels: {
+						style: {
+							fontFamily: "Exo-Light"
+						}
+					}
+				}, { //Se muestran aquí las velocidades
+					opposite: true,
+					title: {
+						text: 'Velocidad'
+					},
+					labels: {
+						style: {
+							fontFamily: "Exo-Light"
+						}
+					}
+				}],
+				series: [
+					{
+						name: 'Aceleración vertical',
+						color: '#7a62e6',
+						marker: {
+							radius: 3,
+							symbol: 'circle'
+						},
+						data: puntos.map(punto => punto.y),
+						yAxis: 0
+					},
+					{
+						name: 'Velocidad',
+						color: '#2d1a54',
+						marker: {
+							radius: 3,
+							symbol: 'circle'
+						},
+						data: puntos.map(punto => punto.velocidad),
+						yAxis: 1
+					}
+				],
+				tooltip: {
+					formatter: function () {
+						return `Aceleración vertical ${puntos[this.point.x].y} <br>Coordenada: ${puntos[this.point.x].coordenadas} <br>Velocidad: ${puntos[this.point.x].velocidad}`;
+					}
+				},
+				legend: {
+					layout: 'vertical',
+					align: 'right',
+					verticalAlign: 'middle'
+				},
+				credits: {
+					enabled: false
+				},
+				plotOptions: {
+					series: {
+						point: {
+							events: {
+								mouseOver: function () {
+									if (chartIsLoaded) {
+									}
+								},
+							}
+						},
+					}
+				}
+			});
+			//Evento render del chart
+			chart2.render(function () {
+				//Actualizar la variable de estado
+				chartIsLoaded = true;
+			});
+
+			// Recorremos los índices de los puntos con baches para crear las plotBands sobre el chart
+			for (let i = 0; i < resultado.length; i++) {
+				let start = resultado[i].x - 1;
+				let end = resultado[i].x + 1;
+				chart2.xAxis[0].addPlotBand({
+					from: start,
+					to: end,
+					color: '#00FA27',
+					id: `plotband-${resultado[i]}`
+				});
+			}
+		}
+	</script>
+</body>
+
+</html>
