@@ -58,8 +58,58 @@
        	left: 15%;
        }
 
+       #help {
+       	position: relative;
+       	width: 70%;
+       	height: 6%;
+       	top: 92%;
+       	left: 13%;
+       }
+
        #Atras:hover {
        	opacity: 0.5;
+       }
+
+       #help:hover {
+       	opacity: 0.5;
+       }
+
+       #Ayuda {
+       	position: absolute;
+       	height: 100%;
+       	width: 20%;
+       	top: 0%;
+       	left: 0%;
+       	z-index: 100;
+       	background-color: rgba(255, 255, 255, 0.568);
+       	backdrop-filter: blur(5px);
+       }
+
+       #Ayuda h1 {
+       	text-align: justify;
+       	font-family: "Exo-ExtraLight";
+       	line-height: 1;
+       }
+
+       #Ayuda h2 {
+       	margin-left: 10px;
+       	font-family: "Exo-ExtraLight";
+       }
+
+       #Ayuda input {
+       	margin-left: 10px;
+       	display: inline-block;
+       	width: 30px;
+       	vertical-align: middle;
+       }
+
+       #Ayuda p {
+       	display: inline-block;
+       	margin-left: 10px;
+       	text-align: justify;
+       	word-wrap: break-word;
+       	font-family: "Exo-Light";
+       	line-height: 1;
        }
 
        #Contenedor {

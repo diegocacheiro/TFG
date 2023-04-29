@@ -35,7 +35,7 @@
 		<div id="Mapa"></div>
 		<input id="resetbutton" type="image" src="Images/home.png">
 		<div id="Grafico" style="display: none;"></div>
-		<div id="Ayuda" >
+		<div id="Ayuda" style="display: none;">
 			<h1 style="text-align: center;"> AYUDA</h1>
 			<h2>Mapa:</h2>
 			<div>
@@ -684,12 +684,14 @@
 		var boton2 = document.getElementById('ElegirAlg');
 		var boton4 = document.getElementById('GuardarAlg');
 		var boton7 = document.getElementById('CompararAlg');
+		var boton9 = document.getElementById('help');
 
 		//Guardamos en una variable los formularios
 		var formulario = document.getElementById('Filtros');
 		var formulario1 = document.getElementById('FiltroAlgoritmo');
 		var formulario2 = document.getElementById('Guardar');
 		var formulario3 = document.getElementById('VerTabla');
+		var formulario4 = document.getElementById('Ayuda');
 
 		boton1.addEventListener('click', function () {
 			if (control != 1) {
@@ -701,6 +703,11 @@
 					if (formulario3.style.display === "block") {
 						formulario3.style.display = "none";
 						boton7.style.opacity = "";
+					}
+					//en el caso de que esté abierto la ayuda
+					if (formulario4.style.display === "block") {
+						formulario4.style.display = "none";
+						boton9.style.opacity = "";
 					}
 				} else {
 					formulario.style.display = "none";
@@ -722,6 +729,11 @@
 					if (formulario3.style.display === "block") {
 						formulario3.style.display = "none";
 						boton7.style.opacity = "";
+					}
+					//en el caso de que esté abierto la ayuda
+					if (formulario4.style.display === "block") {
+						formulario4.style.display = "none";
+						boton9.style.opacity = "";
 					}
 					formulario1.style.display = "block";
 					boton2.style.opacity = "0.25";
@@ -782,6 +794,11 @@
 					if (formulario3.style.display === "block") {
 						formulario3.style.display = "none";
 						boton7.style.opacity = "";
+					}
+					//en el caso de que esté abierto la ayuda
+					if (formulario4.style.display === "block") {
+						formulario4.style.display = "none";
+						boton9.style.opacity = "";
 					}
 				} else {
 					formulario2.style.display = "none";
@@ -859,6 +876,11 @@
 					formulario2.style.display = "none";
 					boton4.style.opacity = "";
 				}
+				//en el caso de que esté abierto la ayuda
+				if (formulario4.style.display === "block") {
+					formulario4.style.display = "none";
+					boton9.style.opacity = "";
+				}
 				obtenerAlgoritmosComparar();
 			} else {
 				formulario3.style.display = "none";
@@ -873,6 +895,35 @@
 			boton7.style.opacity = "";
 		});
 
+		boton9.addEventListener('click', function (event) {
+			if (formulario4.style.display === "none") {
+				//en el caso de que esté abierto el botón de filtro de trazas
+				if (formulario.style.display === "block") {
+					formulario.style.display = "none";
+					boton1.style.opacity = "";
+				}
+				//en el caso de que esté abierto el botón de elegir algoritmo
+				if (formulario1.style.display === "block") {
+					formulario1.style.display = "none";
+					boton2.style.opacity = "";
+				}
+				//en el caso de que esté abierto el botón de guardar
+				if (formulario2.style.display === "block") {
+					formulario2.style.display = "none";
+					boton4.style.opacity = "";
+				}
+				//en el caso de que esté abierto el botón de comparar
+				if (formulario3.style.display === "block") {
+					formulario3.style.display = "none";
+					boton7.style.opacity = "";
+				}
+				formulario4.style.display = "block";
+				boton9.style.opacity = "0.25";
+			} else {
+				formulario4.style.display = "none";
+				boton9.style.opacity = "";
+			}
+		});
 
 	</script>
 

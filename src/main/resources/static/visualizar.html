@@ -23,12 +23,51 @@
 	</div>
 	<div id="Lateral">
 		<input id="Atras" type="image" src="Images/Atras.png">
+		<input id="help" type="image" src="Images/Interrogacion.png">
 	</div>
 
 	<div id="Contenedor">
 		<div id="Mapa"></div>
 		<input id="resetbutton" type="image" src="Images/home.png">
 		<div id="Grafico"></div>
+		<div id="Ayuda" style="display: none;">
+			<h1 style="text-align: center;"> AYUDA</h1>
+			<h2>Mapa:</h2>
+			<div>
+				<input type="image" src="Images/mas.png">
+				<p>Aumentar Zoom</p>
+			</div>
+			<div>
+				<input type="image" src="Images/menos.png">
+				<p>Disminuír Zoom</p>
+			</div>
+			<div>
+				<input type="image" src="Images/home.png">
+				<p>Resetear Zoom</p>
+			</div>
+			<div>
+				<input type="image" src="Images/capas.png">
+				<p>Selección de un mapa</p>
+			</div>
+			<h2>Menú:</h2>
+			<div>
+				<input type="image" src="Images/AtrasNegro.png">
+				<p>Vuelta a la página principal</p>
+			</div>
+			<h2>Resultados:</h2>
+			<div>
+				<input type="image" src="Images/ubicacion1.png">
+				<p>Baches detectados manualmente</p>
+			</div>
+			<div>
+				<input type="image" src="Images/ubicacion2.png">
+				<p>Baches detectados por un algoritmo</p>
+			</div>
+			<div>
+				<input type="image" src="Images/coche.png">
+				<p>Ubicación en el gráfico sobre el mapa</p>
+			</div>
+		</div>
 	</div>
 
 	<script>
@@ -297,6 +336,18 @@
 
 		//Guardamos las capas creadas
 		var layersFiltrados = new Map();
+
+		var mostrarAyuda = document.getElementById('help');
+		var ayuda = document.getElementById('Ayuda');
+		mostrarAyuda.addEventListener('click', function (event) {
+			if (ayuda.style.display === "none") {
+				ayuda.style.display = "block";
+				mostrarAyuda.style.opacity = "0.25";
+			} else {
+				ayuda.style.display = "none";
+				mostrarAyuda.style.opacity = "";
+			}
+		});
 
 		var id = parseInt(localStorage.getItem("id1"));
 		$.ajax({

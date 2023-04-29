@@ -81,15 +81,15 @@
        	top: 21%;
        	left: 25%;
        }
-	   
-	   #help{
-	    position: relative;
+
+       #help {
+       	position: relative;
        	width: 70%;
        	height: 6%;
        	top: 80%;
        	left: 13%;
-	   }
-	   
+       }
+
        #MostrarForm:hover {
        	opacity: 0.5;
        }
@@ -105,7 +105,7 @@
        #CompararAlg:hover {
        	opacity: 0.5;
        }
-       
+
        #help:hover {
        	opacity: 0.5;
        }
@@ -140,7 +140,7 @@
        #resetbutton:hover {
        	background-color: #dddddd;
        }
-       
+
        #Grafico {
        	position: absolute;
        	height: 30%;
@@ -153,9 +153,9 @@
        	border-radius: 10px;
        	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
        }
-			
-	   #Ayuda {
-        position: absolute;
+
+       #Ayuda {
+       	position: absolute;
        	height: 100%;
        	width: 25%;
        	top: 0%;
@@ -164,23 +164,25 @@
        	background-color: rgba(255, 255, 255, 0.568);
        	backdrop-filter: blur(5px);
        }
-       
+
        #Ayuda h1 {
        	text-align: justify;
        	font-family: "Exo-ExtraLight";
        	line-height: 1;
        }
-	   
-	   #Ayuda h2 {
+
+       #Ayuda h2 {
        	margin-left: 10px;
        	font-family: "Exo-ExtraLight";
        }
-	   #Ayuda input {
-	    margin-left: 10px;
-	    display: inline-block;
-	    width: 30px; /* Modifica este valor para ajustar el ancho de los inputs */
-	    vertical-align: middle;
-	  }
+
+       #Ayuda input {
+       	margin-left: 10px;
+       	display: inline-block;
+       	width: 30px;
+       	vertical-align: middle;
+       }
+
        #Ayuda p {
        	display: inline-block;
        	margin-left: 10px;
@@ -189,7 +191,7 @@
        	font-family: "Exo-Light";
        	line-height: 1;
        }
-       
+
        #Filtros {
        	position: absolute;
        	height: 100%;
