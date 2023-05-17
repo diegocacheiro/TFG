@@ -6,12 +6,9 @@ import com.usc.repository.BachesRepository;
 import com.usc.service.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Type;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 
@@ -69,13 +66,13 @@ public class BasicRestController{
 	
 	@GetMapping("/algoritmos/Comparacion")
     public ResponseEntity<List<Object[]>> obtenerAlgoritmosParaComparar() {
-		/*
+		
 		try {
 			insertarDatosMagistela();
 		} catch (UnirestException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
         return ResponseEntity.ok(repository.AlgoritmosComparacion());
     }
 	
@@ -126,12 +123,8 @@ public class BasicRestController{
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error al eliminar el objeto");
         }
     }
- /*
+ 
     public void insertarDatosMagistela() throws UnirestException{
-    	int contador = 0;
-    	int contadorParcial = 0;
-    	int flag = 0;
-    	
     	Unirest.setTimeouts(0, 0);
     	//Sacamos la lista de trazas existentes
 		HttpResponse<String> response = Unirest.get(URLlistaTraza).header("authorization", "bearer " + TOKEN).asString();
@@ -140,8 +133,8 @@ public class BasicRestController{
 		//Lo convertimos en un objeto y creamos una lista de objetos
 		Type listType = new TypeToken<List<Travel>>() {}.getType();
 		List<Travel> travels = new Gson().fromJson(json, listType);
+		
 		Type t = new TypeToken<List<TravelDatos>>() {}.getType();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		
 		//Recorremos cada objeto y usamos el id para acceder a la traza
 		for (Iterator<Travel> iterator = travels.iterator(); iterator.hasNext();) {
@@ -151,72 +144,85 @@ public class BasicRestController{
 			response = Unirest.get(URLTraza + travel.getId()).header("authorization", "bearer " + TOKEN).asString();
 			json = response.getBody();
 			
+			
+			//Accedemos a la traza 31
 			if (travel.getId() == 31) {
 				List<TravelDatos> travelsCompleto = new Gson().fromJson(json, t);
-				System.out.println(travelsCompleto.get(0).getId());
-				for (int i = 0; i < travelsCompleto.get(0).getLocations().size(); i++) {
-					System.out.println("________________________________________");
-					contadorParcial += contador;
-					contador = 0;
-					for (int z = 0; z < travelsCompleto.get(0).getBumps().size(); z++) {
-						if (travelsCompleto.get(0).getLocations().get(i).getTime() == travelsCompleto.get(0).getBumps().get(z).getTime()) 
-							flag = 1;
-					}
-					if (i < travelsCompleto.get(0).getLocations().size() - 1) {
-						System.out.println("Track: " + travelsCompleto.get(0).getLocations().get(i).getTravelId() + 
-								", Point_id: " + travelsCompleto.get(0).getLocations().get(i).getId() +
-								", Point_geo: " + travelsCompleto.get(0).getLocations().get(i).getLatitude() + ',' + travelsCompleto.get(0).getLocations().get(i).getLongitude() +
-								", Speed: " + travelsCompleto.get(0).getLocations().get(i).getSpeed() +
-								", Elevation: " + travelsCompleto.get(0).getLocations().get(i).getAltitude() +
-								", start_time: " +  travelsCompleto.get(0).getLocations().get(i).getTime() +
-								", end_time: " + travelsCompleto.get(0).getLocations().get(i+1).getTime());
-						if (flag == 1) {
-							flag = 0;
-							System.out.println("time: " + travelsCompleto.get(0).getLocations().get(i).getTime() + ", va: " + travelsCompleto.get(0).getAcceletarions().get(j).getZ() + ", bm: " + 1);
-						} else {
-							System.out.println("time: " + travelsCompleto.get(0).getLocations().get(i).getTime() + ", va: " + travelsCompleto.get(0).getAcceletarions().get(j).getZ() + ", bm: " + 0);
-						}
-						for (int j = 0; j < travelsCompleto.get(0).getAcceletarions().size(); j++) {
-							if (Long.parseLong(travelsCompleto.get(0).getAcceletarions().get(j).getTime()) >=  Long.parseLong(travelsCompleto.get(0).getLocations().get(i).getTime())
-									&& Long.parseLong(travelsCompleto.get(0).getAcceletarions().get(j).getTime()) < Long.parseLong(travelsCompleto.get(0).getLocations().get(i+1).getTime())) {
-								if (travelsCompleto.get(0).getLocations().get(i).getId() == 80) {
-									System.out.println("time: " + travelsCompleto.get(0).getAcceletarions().get(j).getTime() + ", va: " + travelsCompleto.get(0).getAcceletarions().get(j).getZ() + ", bm: " + 0);
-								}
-								contador+=1;
+				//System.out.println(travelsCompleto.get(0).getId());
+				     
+				List<Acceletarions> acceletarions = travelsCompleto.get(0).getAcceletarions();
+				List<Locations> locations = travelsCompleto.get(0).getLocations();
+				List<Bumps> bumps = travelsCompleto.get(0).getBumps();
+				List <Track_points> tp = new ArrayList<>();
+				
+				System.out.println("Acceleraciones:" + acceletarions.size());
+				System.out.println("Localizaciones:" + locations.size());
+				
+				//Para cada localización
+				for (int i = 0; i < locations.size(); i++) {
+					List<Measures> measures = new ArrayList<>();
+					//Vemos si localización, esta en la primera localización o está en la última
+					if (i == 0) {
+						//Recorremos las aceleraciones
+						for (int j = 0; j < acceletarions.size(); j++) {
+							//Si la aceleracion está correspondida en el rango de la localización y localización + 1 o es menor que la localización, lo agregamos
+							if (Long.parseLong(acceletarions.get(j).getTime()) >= Long.parseLong(locations.get(i).getTime()) && 
+									Long.parseLong(acceletarions.get(j).getTime()) <= Long.parseLong(locations.get(i+1).getTime()) || 
+									Long.parseLong(acceletarions.get(j).getTime()) <= Long.parseLong(locations.get(i).getTime())){
+								measures.add(new Measures(acceletarions.get(j).getTime(), acceletarions.get(j).getZ(), 0));
 							}
 						}
-						
+						tp.add(new Track_points(Integer.toString(locations.get(i).getTravelId()), locations.get(i).getId(), new Double[]{locations.get(i).getLatitude(), locations.get(i).getLongitude()}, locations.get(i).getSpeed(), locations.get(i).getAltitude(), locations.get(i).getTime(), locations.get(i+1).getTime(), measures));
+					} else if (i < locations.size() - 1 && i != 0 ) {
+						//Recorremos las aceleraciones
+						for (int j = 0; j < acceletarions.size(); j++) {
+							//Si la aceleracion está correspondida en el rango de la localización y localización + 1, lo agregamos
+							if (Long.parseLong(acceletarions.get(j).getTime()) >= Long.parseLong(locations.get(i).getTime()) && 
+									Long.parseLong(acceletarions.get(j).getTime()) <= Long.parseLong(locations.get(i+1).getTime())) {
+								measures.add(new Measures(acceletarions.get(j).getTime(), acceletarions.get(j).getZ(), 0));
+							}
+						}
+						tp.add(new Track_points(Integer.toString(locations.get(i).getTravelId()), locations.get(i).getId(), new Double[]{locations.get(i).getLatitude(), locations.get(i).getLongitude()}, locations.get(i).getSpeed(), locations.get(i).getAltitude(), locations.get(i).getTime(), locations.get(i+1).getTime(), measures));
 					} else {
-						System.out.println("Track: " + travelsCompleto.get(0).getLocations().get(i).getTravelId() + 
-								", Point_id: " + travelsCompleto.get(0).getLocations().get(i).getId() +
-								", Point_geo: " + travelsCompleto.get(0).getLocations().get(i).getLatitude() + ',' + travelsCompleto.get(0).getLocations().get(i).getLongitude() +
-								", Speed: " + travelsCompleto.get(0).getLocations().get(i).getSpeed() +
-								", Elevation: " + travelsCompleto.get(0).getLocations().get(i).getAltitude() +
-								", start_time: " +  travelsCompleto.get(0).getLocations().get(i).getTime() +
-								", end_time: " + travelsCompleto.get(0).getAcceletarions().get(travelsCompleto.get(0).getAcceletarions().size()-1).getTime());
-						for (int j = 0; j < travelsCompleto.get(0).getAcceletarions().size(); j++) {
-							if (Long.parseLong(travelsCompleto.get(0).getAcceletarions().get(j).getTime()) >=  Long.parseLong(travelsCompleto.get(0).getLocations().get(i).getTime())) {
-								for (int z = 0; z < travelsCompleto.get(0).getBumps().size(); z++) {
-									if (travelsCompleto.get(0).getAcceletarions().get(j).getTime() == travelsCompleto.get(0).getBumps().get(z).getTime()) 
-										flag = 1;
+						//Recorremos las aceleraciones
+						for (int j = 0; j < acceletarions.size(); j++) {
+							//Si la aceleracion está correspondida en el rango de la localización, lo agregamos
+							if (Long.parseLong(acceletarions.get(j).getTime()) >= Long.parseLong(locations.get(i).getTime())) {
+								measures.add(new Measures(acceletarions.get(j).getTime(), acceletarions.get(j).getZ(), 0));
+							}
+						}
+						tp.add(new Track_points(Integer.toString(locations.get(i).getTravelId()), locations.get(i).getId(), new Double[]{locations.get(i).getLatitude(), locations.get(i).getLongitude()}, locations.get(i).getSpeed(), locations.get(i).getAltitude(), locations.get(i).getTime(), acceletarions.get(acceletarions.size()-1).getTime(), measures));
+					}
+				}
+				//Leemos los baches del array bumps
+				for (int i = 0; i < bumps.size(); i++) {
+					for (int j = 0; j < tp.size(); j++) {
+						if (Long.parseLong(bumps.get(i).getTime()) >= Long.parseLong(tp.get(j).getStart_time()) && Long.parseLong(bumps.get(i).getTime()) < Long.parseLong(tp.get(j).getEnd_time())) {
+							Double maxVa = 0.0;
+							String time = "";
+							for (Measures measure : tp.get(j-1).getMeasures()) {
+								if (measure.getVa() > maxVa) {
+									maxVa = measure.getVa();
+									time = measure.getTime();
 								}
-								if (flag == 1) {
-									flag = 0;
-									System.out.println("time: " + travelsCompleto.get(0).getLocations().get(i).getTime() + ", va: " + travelsCompleto.get(0).getAcceletarions().get(j).getZ() + ", bm: " + 1);
-								} else {
-									//System.out.println("time: " + travelsCompleto.get(0).getLocations().get(i).getTime() + ", va: " + travelsCompleto.get(0).getAcceletarions().get(j).getZ() + ", bm: " + 0);
+							}
+							for (Measures measure : tp.get(j-1).getMeasures()) {
+								if (measure.getTime() == time) {
+									measure.setBm(1);
 								}
-								contador+=1;
 							}
 						}
 					}
 				}
-				contadorParcial += contador;
-				contador = 0;
-				System.out.println(contadorParcial);
-				System.out.println(travelsCompleto.get(0).getAcceletarions().size());
+				for(int j = 0; j < tp.size(); j++) {
+					List <Integer> va = new ArrayList<>();
+					for (Measures m: tp.get(j).getMeasures()) {
+						va.add(m.getBm());
+					}
+				}
+				//Ejecutar el guardado de tp en la base de datos
 			}
 		}
 		
-    }*/
+    }
 }

@@ -2,10 +2,10 @@ package com.usc.datos;
 
 public class Measures {
 	private String time;
-	private String va;
-	private String bm;
+	private Double va;
+	private Integer bm;
 	
-	public Measures(String time, String va, String bm) {
+	public Measures(String time, Double va, Integer bm) {
 		super();
 		this.time = time;
 		this.va = va;
@@ -17,16 +17,16 @@ public class Measures {
 	public void setTime(String time) {
 		this.time = time;
 	}
-	public String getVa() {
+	public Double getVa() {
 		return va;
 	}
-	public void setVa(String va) {
+	public void setVa(Double va) {
 		this.va = va;
 	}
-	public String getBm() {
+	public Integer getBm() {
 		return bm;
 	}
-	public void setBm(String bm) {
+	public void setBm(Integer bm) {
 		this.bm = bm;
 	}
 	@Override

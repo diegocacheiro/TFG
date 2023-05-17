@@ -5,7 +5,7 @@ import java.util.List;
 public class Track_points {
 	private String track;
 	private Integer point_id;
-	private Object point_geo;
+	private Double[] point_geo;
 	private Double speed;
 	private Double elevation;
 	private String start_time;
@@ -17,7 +17,7 @@ public class Track_points {
 		super();
 	}
 
-	public Track_points(String track, Integer point_id, Object point_geo, Double speed, Double elevation,
+	public Track_points(String track, Integer point_id, Double[] point_geo, Double speed, Double elevation,
 			String start_time, String end_time, List<Measures> measures) {
 		super();
 		this.track = track;
@@ -42,10 +42,10 @@ public class Track_points {
 	public void setPoint_id(Integer point_id) {
 		this.point_id = point_id;
 	}
-	public Object getPoint_geo() {
+	public Double[] getPoint_geo() {
 		return point_geo;
 	}
-	public void setPoint_geo(Object point_geo) {
+	public void setPoint_geo(Double[] point_geo) {
 		this.point_geo = point_geo;
 	}
 	public Double getSpeed() {
