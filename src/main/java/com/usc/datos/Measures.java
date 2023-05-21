@@ -1,6 +1,8 @@
 package com.usc.datos;
 
-public class Measures {
+import java.io.Serializable;
+
+public class Measures implements Serializable{
 	private String time;
 	private Double va;
 	private Integer bm;

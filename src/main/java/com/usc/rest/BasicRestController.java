@@ -3,14 +3,20 @@ package com.usc.rest;
 import com.usc.algoritmos.*;
 import com.usc.datos.*;
 import com.usc.repository.BachesRepository;
+import com.usc.repository.Track_pointsRepository;
 import com.usc.service.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,6 +24,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+import org.springframework.data.geo.Point;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +46,8 @@ public class BasicRestController{
 
 	@Autowired
 	private BachesRepository repository;
+	@Autowired
+	private Track_pointsRepository repositorytp;
 	@Autowired
 	private AlgoritmosServicio algoritmos;
 	
@@ -66,7 +75,6 @@ public class BasicRestController{
 	
 	@GetMapping("/algoritmos/Comparacion")
     public ResponseEntity<List<Object[]>> obtenerAlgoritmosParaComparar() {
-		
 		try {
 			insertarDatosMagistela();
 		} catch (UnirestException e) {
@@ -172,7 +180,8 @@ public class BasicRestController{
 								measures.add(new Measures(acceletarions.get(j).getTime(), acceletarions.get(j).getZ(), 0));
 							}
 						}
-						tp.add(new Track_points(Integer.toString(locations.get(i).getTravelId()), locations.get(i).getId(), new Double[]{locations.get(i).getLatitude(), locations.get(i).getLongitude()}, locations.get(i).getSpeed(), locations.get(i).getAltitude(), locations.get(i).getTime(), locations.get(i+1).getTime(), measures));
+						tp.add(new Track_points(new Track_pointsId(Integer.toString(locations.get(i).getTravelId()), locations.get(i).getId()),new Point(locations.get(i).getLatitude(), locations.get(i).getLongitude()), locations.get(i).getSpeed(),locations.get(i).getAltitude(),LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(locations.get(i).getTime())),ZoneId.systemDefault()),LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(locations.get(i+1).getTime())),ZoneId.systemDefault()), measures));
+						
 					} else if (i < locations.size() - 1 && i != 0 ) {
 						//Recorremos las aceleraciones
 						for (int j = 0; j < acceletarions.size(); j++) {
@@ -182,7 +191,7 @@ public class BasicRestController{
 								measures.add(new Measures(acceletarions.get(j).getTime(), acceletarions.get(j).getZ(), 0));
 							}
 						}
-						tp.add(new Track_points(Integer.toString(locations.get(i).getTravelId()), locations.get(i).getId(), new Double[]{locations.get(i).getLatitude(), locations.get(i).getLongitude()}, locations.get(i).getSpeed(), locations.get(i).getAltitude(), locations.get(i).getTime(), locations.get(i+1).getTime(), measures));
+						tp.add(new Track_points(new Track_pointsId(Integer.toString(locations.get(i).getTravelId()), locations.get(i).getId()), new Point(locations.get(i).getLatitude(), locations.get(i).getLongitude()), locations.get(i).getSpeed(), locations.get(i).getAltitude(), LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(locations.get(i).getTime())),ZoneId.systemDefault()),  LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(locations.get(i+1).getTime())),ZoneId.systemDefault()), measures));
 					} else {
 						//Recorremos las aceleraciones
 						for (int j = 0; j < acceletarions.size(); j++) {
@@ -191,13 +200,14 @@ public class BasicRestController{
 								measures.add(new Measures(acceletarions.get(j).getTime(), acceletarions.get(j).getZ(), 0));
 							}
 						}
-						tp.add(new Track_points(Integer.toString(locations.get(i).getTravelId()), locations.get(i).getId(), new Double[]{locations.get(i).getLatitude(), locations.get(i).getLongitude()}, locations.get(i).getSpeed(), locations.get(i).getAltitude(), locations.get(i).getTime(), acceletarions.get(acceletarions.size()-1).getTime(), measures));
+						tp.add(new Track_points(new Track_pointsId(Integer.toString(locations.get(i).getTravelId()), locations.get(i).getId()), new Point(locations.get(i).getLatitude(), locations.get(i).getLongitude()), locations.get(i).getSpeed(), locations.get(i).getAltitude(), LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(locations.get(i).getTime())),ZoneId.systemDefault()), LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(acceletarions.get(acceletarions.size()-1).getTime())),ZoneId.systemDefault()), measures));
 					}
 				}
-				//Leemos los baches del array bumps
+				//Leemos los baches del array bumps y ponemos a 1 aquellos que correspondan
 				for (int i = 0; i < bumps.size(); i++) {
 					for (int j = 0; j < tp.size(); j++) {
-						if (Long.parseLong(bumps.get(i).getTime()) >= Long.parseLong(tp.get(j).getStart_time()) && Long.parseLong(bumps.get(i).getTime()) < Long.parseLong(tp.get(j).getEnd_time())) {
+						if (LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(bumps.get(i).getTime())),ZoneId.systemDefault()).isBefore(tp.get(j).getStart_time())  && 
+								LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(bumps.get(i).getTime())),ZoneId.systemDefault()).isAfter(tp.get(j).getEnd_time())) {
 							Double maxVa = 0.0;
 							String time = "";
 							for (Measures measure : tp.get(j-1).getMeasures()) {
@@ -214,13 +224,15 @@ public class BasicRestController{
 						}
 					}
 				}
+				//Cambiamos el timestamp
 				for(int j = 0; j < tp.size(); j++) {
-					List <Integer> va = new ArrayList<>();
-					for (Measures m: tp.get(j).getMeasures()) {
-						va.add(m.getBm());
-					}
+					System.out.println(tp.get(j).getStart_time());
+					try {
+						repositorytp.save(tp.get(j));
+					} catch (Exception e) {
+						System.out.println(e);
+			        }
 				}
-				//Ejecutar el guardado de tp en la base de datos
 			}
 		}
 		
