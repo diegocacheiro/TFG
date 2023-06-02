@@ -232,6 +232,31 @@
        	border-radius: 4px;
        	font-family: "Exo-Light";
        }
+       
+       #Filtros select {
+       	width: 85%;
+       	color: #333;
+       	padding: 10px;
+       	font-size: 16px;
+       	border-radius: 5px;
+       	-webkit-appearance: none;
+       	-moz-appearance: none;
+       	appearance: none;
+       	background-repeat: no-repeat;
+       	background-position: right center;
+       	margin-left: 5%;
+       	margin-right: 5%;
+       	font-family: "Exo-Light";
+       }
+
+       #Filtros select:hover {
+       	background-color: #e6e6e6;
+       }
+
+       #Filtros select:focus {
+       	outline: none;
+       	box-shadow: 0 0 5px 1px #666;
+       }
 
        #Filtros button {
        	display: block;
@@ -245,7 +270,7 @@
        	border-radius: 5px;
        	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
        	cursor: pointer;
-       	margin-top: 5%;
+       	margin-top: 30%;
        	font-family: "Exo-Light";
        }
 

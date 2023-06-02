@@ -24,11 +24,10 @@
 	</div>
 
 	<div id="Lateral">
-		<input id="MostrarForm" type="image" src="Images/lupa.png">
-		<input id="ElegirAlg" type="image" src="Images/configuracion.png">
-		<input id="GuardarAlg" type="image" src="Images/guardar.png">
-		<input id="CompararAlg" type="image" src="Images/comparar.png">
-		<input id="help" type="image" src="Images/Interrogacion.png">
+		<input id="MostrarForm" type="image" src="Images/lupa.png"> <input id="ElegirAlg" type="image"
+			src="Images/configuracion.png"> <input id="GuardarAlg" type="image" src="Images/guardar.png"> <input
+			id="CompararAlg" type="image" src="Images/comparar.png"> <input id="help" type="image"
+			src="Images/Interrogacion.png">
 	</div>
 
 	<div id="Contenedor">
@@ -36,7 +35,7 @@
 		<input id="resetbutton" type="image" src="Images/home.png">
 		<div id="Grafico" style="display: none;"></div>
 		<div id="Ayuda" style="display: none;">
-			<h1 style="text-align: center;"> AYUDA</h1>
+			<h1 style="text-align: center;">AYUDA</h1>
 			<h2>Mapa:</h2>
 			<div>
 				<input type="image" src="Images/mas.png">
@@ -90,29 +89,19 @@
 			</div>
 		</div>
 		<div id="Filtros" style="display: none;">
-			<h1 style="text-align: center;"> FILTRADO</h1>
-			<p style="text-align: justify; margin-left: 5%; margin-right: 5%;">Filtra las rutas que se encuentran en el
-				círculo dibujado.</p>
-			<form action="" method="post">
-				<label for="freq_min">Frecuencia mínima:</label>
-				<input type="range" id="freq_min" name="freq_min" min="0" max="1000">
-
-				<label for="freq_max">Frecuencia máxima:</label>
-				<input type="number" id="freq_max" name="freq_max" min="0" max="1000">
-
-				<label for="speed">Velocidad:</label>
-				<input type="number" id="speed" name="speed" min="0" max="500">
-
-				<label for="elevation">Elevación:</label>
-				<input type="number" id="elevation" name="elevation" min="0" max="5000">
-
-				<button type="submit">Filtrar</button>
+			<h1 style="text-align: center;">FILTRADO</h1>
+			<p style="text-align: justify; margin-left: 5%; margin-right: 5%;">Filtra
+				las rutas que se encuentran en el círculo dibujado.</p>
+			<form>
+				<select id="CompletarTrazas"></select>
+				<button id="Filtrar">Filtrar</button>
 			</form>
 		</div>
 		<div id="FiltroAlgoritmo" style="display: none;">
 			<h1 style="text-align: center;">ANÁLISIS</h1>
-			<p style="text-align: justify; margin-left: 5%; margin-right: 5%;">Analiza tu traza seleccionando diferentes
-				algoritmos para la detección de baches.</p>
+			<p style="text-align: justify; margin-left: 5%; margin-right: 5%;">Analiza
+				tu traza seleccionando diferentes algoritmos para la detección de
+				baches.</p>
 			<form>
 				<select id="CompletarAlgoritmos"></select>
 				<h2>Descripción:</h2>
@@ -123,7 +112,8 @@
 			</form>
 		</div>
 		<div id="Guardar" style="display: none;">
-			<h1 style="text-align: center;">¿Desea guardar los datos del algoritmo seleccionado?</h1>
+			<h1 style="text-align: center;">¿Desea guardar los datos del
+				algoritmo seleccionado?</h1>
 			<div id="Botones">
 				<button id="cerrarGuardado">Cerrar</button>
 				<button id="abrirGuardado">Guardar</button>
@@ -224,7 +214,7 @@
 					}
 				},
 				title: {
-					text: 'Anális del pavimento',
+					text: 'Análisis del pavimento',
 					style: {
 						fontSize: '30px',
 						fontFamily: "Exo-ExtraLight"
@@ -343,6 +333,10 @@
 		let control = 0;
 		//flag que controla que no haya mas de un marcador en el mapa
 		let flagMarker = 0;
+		//Solo permite hacer clic una vez en el polinomio
+		let flagPoly = 0;
+		//Creamos un array que almacene los índices filtrados
+		var indices = [];
 
 		/*--------------------MAPA--------------------*/
 		//Coordenadas de SDC 42.88052 -8.54569
@@ -451,6 +445,7 @@
 		var bachesalgoritmo = L.layerGroup().addTo(map);
 
 		/*--------------------GEOSERVER--------------------*/
+
 		var wmsGeneral = L.tileLayer.wms('http://localhost:6060/geoserver/TFG/wms?', {
 			layers: 'TFG:track_points',
 			format: 'image/png',
@@ -498,7 +493,7 @@
 				//Obtenemos el radio del circulo
 				var radius = e.layer.getRadius();
 				//Creamos un array que almacene los índices filtrados
-				var indices = [];
+				indices = [];
 
 				//Realizamos un AjaxRequest a Geoserver con la consulta
 				$.ajax({
@@ -522,7 +517,7 @@
 						//En el caso de no haber ningún índice, no se pintará nada
 						if (indices.length != 0) {
 							//Flag que  se permite hacer click solo una vez en el polyline
-							let flagPoly = 0;
+							flagPoly = 0;
 							if (flagMarker == 1) {
 								flecha.setLatLng([0, 0]);
 								flagMarker = 0;
@@ -634,12 +629,15 @@
 																var cadena = [];
 																//leemos la propiedad measures, que contiene los valores de la aceleracion vertical y baches
 																cadena.push(data.features[i].properties.measures.split('{'));
+																console.log(cadena);
 																let ac = [];
 																let baches = [];
 																//Recorremos la cadena sin analizar la primera parte
 																for (var j = 1; j < cadena[0].length; j++) {
-																	ac.push(Number(cadena[0][j].split(":")[4].split(",")[0].split(" ")[1]));
-																	baches.push(Number(cadena[0][j].split(":")[5].split("}")[0].split(" ")[1]));
+																	//ac.push(Number(cadena[0][j].split(":")[4].split(",")[0].split(" ")[1]));
+																	//baches.push(Number(cadena[0][j].split(":")[5].split("}")[0].split(" ")[1]));
+																	ac.push(Number(cadena[0][j].split(":")[2].split(",")[0]));
+																	baches.push(Number(cadena[0][j].split(":")[3].split("}")[0]));
 																}
 																//almacenamos la información en un hashmap
 																hashmap.set(data.features[i].geometry.coordinates.reverse(), {velocidad: data.features[i].properties.speed, aceleracion: ac, baches: baches});
@@ -694,7 +692,7 @@
 		var formulario4 = document.getElementById('Ayuda');
 
 		boton1.addEventListener('click', function () {
-			if (control != 1) {
+			if (control >= 2) {
 				alert("Selecciona un punto sobre el mapa para filtrar datos");
 			} else {
 				if (formulario.style.display === "none") {
@@ -709,11 +707,27 @@
 						formulario4.style.display = "none";
 						boton9.style.opacity = "";
 					}
+					verPropiedades();
 				} else {
 					formulario.style.display = "none";
 					boton1.style.opacity = "";
 				}
 			}
+		});
+		
+		//Configuramos el botón de filtrado
+		var boton10 = document.getElementById('Filtrar');
+		boton10.addEventListener('click', function (event) {
+			event.preventDefault();
+
+			var select = document.getElementById("CompletarTrazas");
+			var traza = select.options[select.selectedIndex].text;
+
+			formulario.style.display = "none";
+			boton1.style.opacity = "";
+
+			console.log("llegue");
+			dibujarTraza(traza);
 		});
 
 		//Ponemos los algoritmos disponibles en el select
@@ -738,8 +752,7 @@
 					formulario1.style.display = "block";
 					boton2.style.opacity = "0.25";
 					pedirNombresAlgoritmos();
-					//Eliminamos los options del select
-					var select = document.getElementById("CompletarAlgoritmos");
+					var select = document.getElementById("CompletarTrazas");
 					select.innerHTML = "";
 				} else {
 					formulario1.style.display = "none";
@@ -928,6 +941,214 @@
 	</script>
 
 	<script>
+
+		function verPropiedades() {
+			$.ajax({
+				url: 'http://localhost:6060/geoserver/TFG/wfs?',
+				type: 'GET',
+				data: {
+					service: 'WFS',
+					version: '1.0.0',
+					request: 'GetFeature',
+					typeName: 'TFG:track_points',
+					outputFormat: 'application/json'
+				},
+				success: function (data) {
+					var features = data.features;
+					var tracks = [];
+					for (var i = 0; i < features.length; i++) {
+						var feature = features[i];
+						var track = feature.properties.track;
+						var track = features[i].properties.track;
+						// Verificar si el track ya está en la lista uniqueTracks
+						if (tracks.indexOf(track) === -1) {
+							tracks.push(track);
+						}
+					}
+					var brandData = [];
+					for (var i = 0; i < tracks.length; i++) {
+						var track = tracks[i];
+						var trackData = track.split('_'); // Dividir el track en partes utilizando el carácter "_"
+
+						// Construir la cadena de datos de marca y año
+						var brandString = trackData[0] + ' ' + trackData[1] + ' ' + trackData[2].split('-')[0];
+
+						// Verificar si la cadena de marca y año ya existe en el array brandData
+						if (!brandData.includes(brandString.toLowerCase())) {
+							brandData.push(brandString.toLowerCase());
+						}
+					}
+					pedirNombresAlgoritmos();
+
+					var select = document.getElementById("CompletarTrazas");
+					select.innerHTML = "";
+
+					for (var i = 0; i < brandData.length; i++) {
+						var option = document.createElement("option"); // Crear un nuevo elemento "option"
+						option.text = brandData[i]; // Asignar el texto del option a la cadena de marca y año
+
+						select.add(option); // Añadir el option al select
+					}
+				},
+				error: function () {
+					document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
+					alert("Error al realizar la consulta");
+				}
+			});
+		}
+
+		function dibujarTraza(Traza) {
+
+			console.log('track ilike \'%' + Traza.replace(/\s/g, "_") + '%\'');
+			$.ajax({
+				url: 'http://localhost:6060/geoserver/TFG/wfs?',
+				type: 'GET',
+				data: {
+					service: 'WFS',
+					version: '1.0.0',
+					request: 'GetFeature',
+					typeName: 'TFG:track_points',
+					outputFormat: 'application/json',
+					srsName: 'EPSG:4326',
+					cql_filter: 'track ilike \'%' + Traza.replace(/\s/g, "_") + '%\''
+				},
+				success: function (data) {
+					indices = [];
+					//Borramos las capas creadas
+					layersFiltrados.forEach(function (layer) {
+						map.removeLayer(layer);
+					});
+					//Limpiamos las capas
+					layersFiltrados.clear();
+					
+					//Guardamos los diferentes índices que hay
+					for (var i = 0; i < data.features.length; i++) {
+						if (indices.indexOf(data.features[i].properties.track) == -1) {
+							indices.push(data.features[i].properties.track);
+						}
+					}
+					const colores = ["#0B94B1", "#E29D17", "#2A7D9B", "#D3C46F", "#1F6D8A", "#E1B141", "#30678D", "#D2B747", "#1A6A7D", "#B5A437", "#266F80", "#D8B846", "#1C7285", "#D7B639", "#256D80", "#B9A335", "#0E6D7C", "#D2B547", "#2A7380", "#E1B13B"];
+					let indice = 0;
+					
+					//Recorremos cada traza y obtenemos sus puntos
+					for (var i = 0; i < indices.length; i++) {
+						$.ajax({
+							url: 'http://localhost:6060/geoserver/TFG/wfs?',
+							type: 'GET',
+							data: {
+								service: 'WFS',
+								version: '1.0.0',
+								request: 'GetFeature',
+								typeName: 'TFG:track_points',
+								outputFormat: 'application/json',
+								srsName: 'EPSG:4326',
+								cql_filter: 'track = ' + '\'' + indices[i] + '\''
+							},
+							success: function (data) {
+								var coordenadas = [];
+								//guardamos las coordenadas de cada punto
+								for (var i = 0; i < data.features.length; i++) {
+									coordenadas.push(data.features[i].geometry.coordinates.reverse());
+								}
+								//si hemos superado las 20 trazas, repetimos los colores
+								if (indice == 19) {
+									indice = 0;
+								} else {
+									indice++;
+								}
+								//Creamos una linea de los puntos de la traza y lo pintamos de un color en concreto
+								var polyLine = L.polyline(coordenadas, {color: colores[indice], weight: 5}).addTo(map);
+								// Agregamos el id del track para poder reconocer posteriormente las trazas
+								polyLine.myData = {
+									name: '\'' + data.features[1].properties.track + '\''
+								};
+								//Guarda el polyline en un hashmap, para después poder eliminarlo o no
+								layersFiltrados.set(data.features[0].properties.track, polyLine);
+
+								//En el caso de hacer click sobre una determinada línea
+								polyLine.on('click', function (e) {
+									document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
+									if (flagPoly == 0) {
+										flagPoly = 1;
+										//Eliminamos los elementos del mapa que no correspondan con la clave del polyline seleccionado
+										for (var [key, value] of layersFiltrados) {
+											//En el caso de tener abierto el formulario de filtros, lo cerramos
+											if (document.getElementById('Filtros').style.display == "block") {
+												document.getElementById('Filtros').style.display = "none";
+												document.getElementById('MostrarForm').style.opacity = "";
+											}
+											//Permitimos la elección de algoritmos
+											control = 2;
+											//Eliminamos todas las trazas que no correpondan con el id seleccionado
+											if (key != e.target.myData.name.replace(/'/g, "")) {
+												map.removeLayer(value);
+												layersFiltrados.delete(key);
+											}
+
+											nombreTraza = e.target.myData.name.replace(/'/g, "");
+											//Para la traza seleccionada realizamos una petición Ajax para obtener los datos de la traza, enconreto los valores que muestran el rebote
+											$.ajax({
+												url: 'http://localhost:6060/geoserver/TFG/wfs?',
+												type: 'GET',
+												data: {
+													service: 'WFS',
+													version: '1.0.0',
+													request: 'GetFeature',
+													typeName: 'TFG:track_points',
+													outputFormat: 'application/json',
+													srsName: 'EPSG:4326',
+													cql_filter: 'track = ' + '\'' + e.target.myData.name.replace(/'/g, "") + '\''
+												},
+												success: function (data) {
+													//Hasmap que almacene las coordenadas juntos con su velocidad, aceleraciones y baches manuales
+													var hashmap = new Map();
+													for (var i = 0; i < data.features.length; i++) {
+														var cadena = [];
+														//leemos la propiedad measures, que contiene los valores de la aceleracion vertical y baches
+														cadena.push(data.features[i].properties.measures.split('{'));
+														console.log(cadena);
+														let ac = [];
+														let baches = [];
+														//Recorremos la cadena sin analizar la primera parte
+														for (var j = 1; j < cadena[0].length; j++) {
+															//ac.push(Number(cadena[0][j].split(":")[4].split(",")[0].split(" ")[1]));
+															//baches.push(Number(cadena[0][j].split(":")[5].split("}")[0].split(" ")[1]));
+															ac.push(Number(cadena[0][j].split(":")[2].split(",")[0]));
+															baches.push(Number(cadena[0][j].split(":")[3].split("}")[0]));
+														}
+														//almacenamos la información en un hashmap
+														hashmap.set(data.features[i].geometry.coordinates.reverse(), {velocidad: data.features[i].properties.speed, aceleracion: ac, baches: baches});
+													}
+													//LLamamos a l función que se encarga de graficar los datos sobre el highchart
+													graficar(hashmap);
+
+													//Visualizamos el gráfico
+													document.getElementById("Grafico").style.display = "block";
+													document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
+												},
+												error: function (xhr, status, error) {
+													document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
+													console.log(error);
+												}
+											});
+										}
+									}
+								});
+							},
+							error: function (xhr, status, error) {
+								console.log(error);
+							}
+						});
+					}
+				},
+				error: function () {
+					document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
+					alert("Error al realizar la consulta");
+				}
+			});
+		}
+
+
 		function obtenerAlgoritmosComparar() {
 			//Creamos una petición get al servidor de spring boot para obtener los nombres de los algoritmos
 			$.ajax({
