@@ -4,25 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import com.usc.datos.Traza;
 
-public class Algoritmos {
-	
-	public static List <Traza> Umbralización (List<Traza> array, Map<String, Object> parametros) {
-		Double umbralArriba = Double.valueOf(parametros.get("Umbral superior").toString());
-		Double umbralAbajo = Double.valueOf(parametros.get("Umbral inferior").toString());
-		//Detecta baches a parti de dos umbrales
-		List <Traza> baches = new ArrayList<>();
-		
-		for (Traza punto: array) {
-			if (punto.getY() >= umbralArriba || punto.getY() <= umbralAbajo) {
-				baches.add(punto);
-			}
-		}
-        return baches;
-    }
-	
-    public static List<Traza> Variabilidad(List<Traza> array, Map<String, Object> parametros) {
+@Component
+public class VariabilidadAlgoritmo implements AlgoritmoInterfaz{
+	@Override
+	public List<Traza> ejecutar(List<Traza> array, Map<String, Object> parametros) {
     	//Parámetro que determina si es un bache o no
     	Double sigma = Double.valueOf(parametros.get("Sigma").toString());
     	List <Traza> baches = new ArrayList<>();
@@ -48,7 +37,6 @@ public class Algoritmos {
 				baches.add(punto);
 			}
 		}
-        
         return baches;
     }
 }

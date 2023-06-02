@@ -1,6 +1,8 @@
 package com.usc.rest;
 
-import com.usc.algoritmos.*;
+import com.usc.algoritmos.AlgoritmoInterfaz;
+import com.usc.algoritmos.UmbralizacionAlgoritmo;
+import com.usc.algoritmos.VariabilidadAlgoritmo;
 import com.usc.datos.*;
 import com.usc.service.*;
 
@@ -24,12 +26,19 @@ import org.springframework.http.ResponseEntity;
 public class BasicRestController{
 	@Autowired
 	private BachesService bachesService;
-	/*
 	@Autowired
-	private  TrackPointService trackPointService; */
+	private  TrackPointService trackPointService;
 	@Autowired
 	private AlgoritmosServicio algoritmos;
 	
+	private final AlgoritmoInterfaz umbralAlgoritmo;
+    private final AlgoritmoInterfaz variabilidadAlgoritmo;
+    
+    public BasicRestController(UmbralizacionAlgoritmo umbralAlgoritmo, VariabilidadAlgoritmo variabilidadAlgoritmo) {
+        this.umbralAlgoritmo = umbralAlgoritmo;
+        this.variabilidadAlgoritmo = variabilidadAlgoritmo;
+    }
+    
 	@PostMapping("/algoritmos/Guardar")
 	public ResponseEntity<String> saveid(@RequestBody Baches b) {
 		Integer id = bachesService.findMaxId();
@@ -83,10 +92,10 @@ public class BasicRestController{
     	List <Traza> resultado = new ArrayList<>();
         switch (id) {
             case 1:
-                resultado = Algoritmos.Umbralización(array, parametros);
+                resultado = umbralAlgoritmo.ejecutar(array, parametros);
                 break;
             case 2:
-                resultado = Algoritmos.Variabilidad(array, parametros);
+                resultado = variabilidadAlgoritmo.ejecutar(array, parametros);
                 break;
             default:
                 throw new IllegalArgumentException("Algoritmo desconocido: " + id);
@@ -103,11 +112,23 @@ public class BasicRestController{
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error al eliminar el objeto");
         }
     }
-/*
+
     @GetMapping("/trackPoints")
-    public ResponseEntity<List<Object[]>> DatosTrack_points() {
-    	return ResponseEntity.ok(trackPointService.findProperties());
+    public ResponseEntity<List<String>> DatosTrack_points() {
+    	List<String> tracks = trackPointService.buscarTracks();
+    	List<String> brandData = new ArrayList<>();
+    	for (var i = 0; i < tracks.size(); i++) {
+    		String[] trackData = tracks.get(i).split("_");
+    		String brandString = trackData[0] + ' ' + trackData[1] + ' ' + trackData[2].split("-")[0];
+    		
+    		// Verificar si la cadena de marca y año ya existe en el array brandData
+			if (!brandData.contains(brandString.toLowerCase())) {
+				brandData.add(brandString.toLowerCase());
+			}
+    	}
+    	
+    	return ResponseEntity.ok(brandData);
     }
- */
+ 
     
 }

@@ -90,8 +90,7 @@
 		</div>
 		<div id="Filtros" style="display: none;">
 			<h1 style="text-align: center;">FILTRADO</h1>
-			<p style="text-align: justify; margin-left: 5%; margin-right: 5%;">Filtra
-				las rutas que se encuentran en el círculo dibujado.</p>
+			<p style="text-align: justify; margin-left: 5%; margin-right: 5%;">Selecciona un vehículo para ver los viajes disponibles.</p>
 			<form>
 				<select id="CompletarTrazas"></select>
 				<button id="Filtrar">Filtrar</button>
@@ -397,21 +396,6 @@
 			map.setView([42.880, -8.54], 14);
 		});
 
-		/*
-		const ayudaButton = document.getElementById('help');
-		const ayudaContenedor = document.getElementById('Ayuda');
-		// Agregar un event listener para el evento "onmouseover"
-		ayudaButton.addEventListener('mouseover', () => {
-		  // Cambiar la propiedad de visualización del div
-		  ayudaContenedor.style.display = 'block';
-		});
-
-		// Agregar un event listener para el evento "onmouseout"
-		ayudaButton.addEventListener('mouseout', () => {
-		  // Cambiar la propiedad de visualización del div
-		  ayudaContenedor.style.display = 'none';
-		});*/
-
 		//Creamos un marker personalizado para la flecha
 		const icon = L.icon({
 			iconUrl: 'Images/coche.png',
@@ -445,13 +429,17 @@
 		var bachesalgoritmo = L.layerGroup().addTo(map);
 
 		/*--------------------GEOSERVER--------------------*/
-
+	
+		/*
 		var wmsGeneral = L.tileLayer.wms('http://localhost:6060/geoserver/TFG/wms?', {
 			layers: 'TFG:track_points',
 			format: 'image/png',
 			transparent: true,
 			attribution: 'TFG'
-		}).addTo(map);
+		}).addTo(map);*/
+		var wmsGeneral = null;
+		//Borramos lo que teniamos pintado en el mapa anteriormente
+		//map.removeLayer(wmsGeneral);
 
 		/*--------------------MAPA DRAW--------------------*/
 		//Creamos el circulo preconfigurado
@@ -539,9 +527,7 @@
 							document.getElementById("GuardarAlg").style.opacity = "";
 							//Permitimos el filtrado de datos
 							control = 1;
-							//Borramos lo que teniamos pintado en el mapa anteriormente
-
-							map.removeLayer(wmsGeneral);
+							
 							//Borramos las capas creadas
 							layersFiltrados.forEach(function (layer) {
 								map.removeLayer(layer);
@@ -629,13 +615,10 @@
 																var cadena = [];
 																//leemos la propiedad measures, que contiene los valores de la aceleracion vertical y baches
 																cadena.push(data.features[i].properties.measures.split('{'));
-																console.log(cadena);
 																let ac = [];
 																let baches = [];
 																//Recorremos la cadena sin analizar la primera parte
 																for (var j = 1; j < cadena[0].length; j++) {
-																	//ac.push(Number(cadena[0][j].split(":")[4].split(",")[0].split(" ")[1]));
-																	//baches.push(Number(cadena[0][j].split(":")[5].split("}")[0].split(" ")[1]));
 																	ac.push(Number(cadena[0][j].split(":")[2].split(",")[0]));
 																	baches.push(Number(cadena[0][j].split(":")[3].split("}")[0]));
 																}
@@ -719,14 +702,12 @@
 		var boton10 = document.getElementById('Filtrar');
 		boton10.addEventListener('click', function (event) {
 			event.preventDefault();
-
 			var select = document.getElementById("CompletarTrazas");
 			var traza = select.options[select.selectedIndex].text;
 
 			formulario.style.display = "none";
 			boton1.style.opacity = "";
-
-			console.log("llegue");
+			
 			dibujarTraza(traza);
 		});
 
@@ -944,48 +925,15 @@
 
 		function verPropiedades() {
 			$.ajax({
-				url: 'http://localhost:6060/geoserver/TFG/wfs?',
+				url: 'http://localhost:8090/TFG/trackPoints',
 				type: 'GET',
-				data: {
-					service: 'WFS',
-					version: '1.0.0',
-					request: 'GetFeature',
-					typeName: 'TFG:track_points',
-					outputFormat: 'application/json'
-				},
 				success: function (data) {
-					var features = data.features;
-					var tracks = [];
-					for (var i = 0; i < features.length; i++) {
-						var feature = features[i];
-						var track = feature.properties.track;
-						var track = features[i].properties.track;
-						// Verificar si el track ya está en la lista uniqueTracks
-						if (tracks.indexOf(track) === -1) {
-							tracks.push(track);
-						}
-					}
-					var brandData = [];
-					for (var i = 0; i < tracks.length; i++) {
-						var track = tracks[i];
-						var trackData = track.split('_'); // Dividir el track en partes utilizando el carácter "_"
-
-						// Construir la cadena de datos de marca y año
-						var brandString = trackData[0] + ' ' + trackData[1] + ' ' + trackData[2].split('-')[0];
-
-						// Verificar si la cadena de marca y año ya existe en el array brandData
-						if (!brandData.includes(brandString.toLowerCase())) {
-							brandData.push(brandString.toLowerCase());
-						}
-					}
-					pedirNombresAlgoritmos();
-
 					var select = document.getElementById("CompletarTrazas");
 					select.innerHTML = "";
 
-					for (var i = 0; i < brandData.length; i++) {
+					for (var i = 0; i < data.length; i++) {
 						var option = document.createElement("option"); // Crear un nuevo elemento "option"
-						option.text = brandData[i]; // Asignar el texto del option a la cadena de marca y año
+						option.text = data[i]; // Asignar el texto del option a la cadena de marca y año
 
 						select.add(option); // Añadir el option al select
 					}
@@ -998,8 +946,6 @@
 		}
 
 		function dibujarTraza(Traza) {
-
-			console.log('track ilike \'%' + Traza.replace(/\s/g, "_") + '%\'');
 			$.ajax({
 				url: 'http://localhost:6060/geoserver/TFG/wfs?',
 				type: 'GET',
@@ -1106,13 +1052,10 @@
 														var cadena = [];
 														//leemos la propiedad measures, que contiene los valores de la aceleracion vertical y baches
 														cadena.push(data.features[i].properties.measures.split('{'));
-														console.log(cadena);
 														let ac = [];
 														let baches = [];
 														//Recorremos la cadena sin analizar la primera parte
 														for (var j = 1; j < cadena[0].length; j++) {
-															//ac.push(Number(cadena[0][j].split(":")[4].split(",")[0].split(" ")[1]));
-															//baches.push(Number(cadena[0][j].split(":")[5].split("}")[0].split(" ")[1]));
 															ac.push(Number(cadena[0][j].split(":")[2].split(",")[0]));
 															baches.push(Number(cadena[0][j].split(":")[3].split("}")[0]));
 														}
