@@ -475,6 +475,8 @@
 		//Añadimos el evento para cuando se dibuja un circulo
 		map.on('draw:created', function (e) {
 			if (e.layerType === 'circle') {
+				//var startTime = performance.now();
+
 				document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
 				//Obtenemos el centro del circulo, del que sacaremos las coordenadas longitud y latitud
 				var center = e.layer.getLatLng();
@@ -573,7 +575,7 @@
 										};
 										//Guarda el polyline en un hashmap, para después poder eliminarlo o no
 										layersFiltrados.set(data.features[0].properties.track, polyLine);
-
+										
 										//En el caso de hacer click sobre una determinada línea
 										polyLine.on('click', function (e) {
 											document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
@@ -648,6 +650,8 @@
 								});
 							}
 						}
+						//var endTime = (performance.now() - startTime) / 1000;
+						//console.log("Tiempo: " + endTime + " segundos");
 						document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
 					},
 					error: function () {
@@ -732,7 +736,11 @@
 					}
 					formulario1.style.display = "block";
 					boton2.style.opacity = "0.25";
+					//var startTime = performance.now();
 					pedirNombresAlgoritmos();
+					//var endTime = (performance.now() - startTime) / 1000;
+					//console.log("Tiempo: " + endTime + " segundos");
+					
 					var select = document.getElementById("CompletarTrazas");
 					select.innerHTML = "";
 				} else {
@@ -811,6 +819,7 @@
 		//Configuramos el botón de guardar en guardado
 		var boton6 = document.getElementById('abrirGuardado');
 		boton6.addEventListener('click', function (event) {
+			//var startTime = performance.now();
 			//ponemos el cursor cargando
 			document.querySelectorAll("*").forEach(e => e.style.cursor = "wait");
 			const resultado_a_guardar = {
@@ -837,6 +846,8 @@
 					boton4.style.opacity = "";
 					if (response.ok) {
 						alert("Se ha guardado correctamente");
+						//var endTime = (performance.now() - startTime) / 1000;
+						//console.log("Tiempo: " + endTime + " segundos");
 					} else {
 						throw new Error('La respuesta no es correcta');
 					}

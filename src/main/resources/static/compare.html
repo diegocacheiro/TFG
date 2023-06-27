@@ -31,6 +31,7 @@
 	</script>
 
 	<script>
+		//var startTime = performance.now();
 		var chart = null;
 		var chart2 = null;
 		//Obtenemos los valores del localstorage
@@ -44,6 +45,8 @@
 				//Pintar los gráficos
 				graficar(data[0].idTraza, data[0].algoritmoNombre, data[0].parametros, data[0].puntosTraza, data[0].resultadoAlgoritmo);
 				graficar2(data[1].idTraza, data[1].algoritmoNombre, data[1].parametros, data[1].puntosTraza, data[1].resultadoAlgoritmo);
+				//var endTime = (performance.now() - startTime) / 1000;
+				//console.log("Tiempo: " + endTime + " segundos");
 				document.querySelectorAll("*").forEach(e => e.style.cursor = "default");
 			},
 			error: function () {
